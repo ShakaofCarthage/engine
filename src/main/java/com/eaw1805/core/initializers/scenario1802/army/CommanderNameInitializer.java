@@ -1,0 +1,386 @@
+package com.eaw1805.core.initializers.scenario1802.army;
+
+import com.eaw1805.core.initializers.AbstractThreadedInitializer;
+import com.eaw1805.data.managers.NationManager;
+import com.eaw1805.data.managers.army.CommanderNameManager;
+import com.eaw1805.data.model.army.CommanderName;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+import java.util.StringTokenizer;
+
+/**
+ * Initializes CommanderName objects.
+ */
+public class CommanderNameInitializer
+        extends AbstractThreadedInitializer {
+
+    /**
+     * a log4j logger to print messages.
+     */
+    private static final Logger LOGGER = LogManager.getLogger(CommanderNameInitializer.class);
+
+    /**
+     * The date of the 4 records.
+     * "Nation ID,Rank,Name,X/Y,Region,Fd,MP,ComC",
+     */
+    private static final String[] DATA = {
+            "1,1,Charles",
+            "1,2,Schwarzenberg",
+            "1,3,Mack",
+            "1,4,Hofer",
+            "1,5,Hiller",
+            "1,6,Elsnitz",
+            "1,7,Laudon",
+            "1,8,Bartenstein",
+            "1,9,Radetzky",
+            "1,10,John",
+            "1,11,Leiberich",
+            "1,12,Bellegarde",
+            "1,13,Friedrich Franz Xaver",
+            "1,14,Johann I Joseph",
+            "1,15,Ferdinand Karl Joseph",
+            "1,16,Ferdinand",
+            "1,17,Fanjo",
+            "1,18,Friedrich VI",
+            "1,19,Ernst",
+            "1,20,Ludwig",
+            "2,1,Wrede",
+            "2,2,Seydewitz",
+            "2,3,Lecoq",
+            "2,4,Baumont",
+            "2,5,Beurman",
+            "2,6,Deroy",
+            "2,7,Emile",
+            "2,8,Polenz",
+            "2,9,Franquemont",
+            "2,10,Tharreau",
+            "2,11,von Hugel",
+            "2,12,von Carlowitz",
+            "2,13,Wilhelm I",
+            "2,14,von Dornberg",
+            "2,15,von Wintzingerode",
+            "3,1,Durring",
+            "3,2,Lasson",
+            "3,3,Waldeck",
+            "3,4,Dornberg",
+            "3,5,Schulenberg",
+            "3,6,Moltke",
+            "3,7,Ewald",
+            "3,8,Wegener",
+            "3,9,Piemann",
+            "3,10,Castenschjold",
+            "3,11,Peymann",
+            "3,12,Jessen",
+            "3,13,von Scholten",
+            "3,14,Bille",
+            "3,15,Heidmann",
+            "3,16,Holck",
+            "3,17,Hegermann",
+            "3,18,Wasmuth",
+            "3,19,Sibbern",
+            "3,20,Rode",
+            "4,1,Castanos",
+            "4,2,Blake",
+            "4,3,Questa",
+            "4,4,Minas",
+            "4,5,Palafox",
+            "4,6,El Empecinado",
+            "4,7,Lardizabel",
+            "4,8,Alvarez de Castro",
+            "4,9,Zayas y Chacon",
+            "4,10,Pablo Morillo",
+            "4,11,Marquis la Romana",
+            "4,12,Torres",
+            "4,13,Valonga",
+            "4,14,Esquivel",
+            "4,15,Giron",
+            "5,1,Napoleon",
+            "5,2,Davout",
+            "5,3,Soult",
+            "5,4,Massena",
+            "5,5,Ney",
+            "5,6,Lannes",
+            "5,7,Oudinot",
+            "5,8,Grouchy",
+            "5,9,Saint Cyr",
+            "5,10,MacDonald",
+            "5,11,Bessieres",
+            "5,12,Mortier",
+            "5,13,Jourdan",
+            "5,14,Kellerman",
+            "5,15,Marmont",
+            "5,16,Suchet",
+            "5,17,Serurier",
+            "5,18,Reille",
+            "5,19,Exelmans",
+            "5,20,Drouot",
+            "6,1,Wellington",
+            "6,2,Moore",
+            "6,3,Uxbridge",
+            "6,4,Picton",
+            "6,5,Beresford",
+            "6,6,Cotton",
+            "6,7,Hill",
+            "6,8,York",
+            "6,9,Lemerchant",
+            "6,10,Kempt",
+            "6,11,Cooke",
+            "6,12,Maitland",
+            "6,13,Colville",
+            "6,14,Somerset",
+            "6,15,Askew",
+            "6,16,Mcdonnell",
+            "6,17,Halkett",
+            "6,18,Adam",
+            "7,1,Orange",
+            "7,2,Perponcher",
+            "7,3,Anthing",
+            "7,4,Dumoncheau",
+            "7,5,Crass",
+            "7,6,Stedmann",
+            "7,7,Bruce",
+            "7,8,Fresin",
+            "7,9,Janssens",
+            "7,10,Chasse",
+            "7,11,Rebeque",
+            "7,12,Krayenhoff",
+            "7,13,Bylandt",
+            "7,14,Eisenach",
+            "7,15,Van Merlen",
+            "7,16,Daendels",
+            "7,17,den Bosch",
+            "8,1,Eugene",
+            "8,2,Teulie",
+            "8,3,Hilliers",
+            "8,4,Lecchi",
+            "8,5,Ornano",
+            "8,6,Palombini",
+            "8,7,Pino",
+            "8,8,Villata",
+            "8,9,Severoli",
+            "8,10,Lahoz",
+            "8,11,Balabio",
+            "8,12,Fontanelli",
+            "8,13,Bava",
+            "8,14,Codazzi",
+            "8,15,Zucchi",
+            "8,16,La Marmora",
+            "8,17,Philippe d'Ornano",
+            "8,18,Sahuc",
+            "8,19,Seras",
+            "8,20,Montbrun",
+            "9,1,Andrade",
+            "9,2,Silveria",
+            "9,3,Waldeck",
+            "9,4,Lima",
+            "9,5,Barbaccena",
+            "9,6,Pareiras",
+            "9,7,La Rosiere",
+            "9,8,Amaranthe",
+            "9,9,Le Cor",
+            "9,10,Golz",
+            "9,11,Oliveria",
+            "9,12,Brito",
+            "9,13,Almeida",
+            "9,14,Tavares",
+            "9,15,Teixeira",
+            "9,16,da Costa",
+            "9,17,de Braganca",
+            "10,1,Mulay Suleiman",
+            "10,2,Algiers Pasha",
+            "10,3,Oran Pasha",
+            "10,4,Ismail Sharif",
+            "10,5,Ali Benghul",
+            "10,6,Mohammed Hadou",
+            "10,7,Abdellan Aisha",
+            "10,8,Mohammed Tenim",
+            "10,9,Judar Pasha",
+            "10,10,Yusuf Qaramanli",
+            "10,11,Hussein Dey",
+            "10,12,Ahmed Bey",
+            "10,13,Qadir Sharif",
+            "10,14,Ali Khodja",
+            "10,15,Ibrahim Busnaq",
+            "10,16,Omar Agha",
+            "10,17,Mustafa Pasha",
+            "10,18,Hammuda Bey",
+            "10,19,Mahmud Bey",
+            "10,20,Abdulah Bey",
+            "11,1,Murat",
+            "11,2,Colletta",
+            "11,3,Manhes",
+            "11,4,Destrees",
+            "11,5,Saxe",
+            "11,6,Pepe",
+            "11,7,Bonfanti",
+            "11,8,Damas",
+            "11,9,Piat",
+            "11,10,Philippsthal",
+            "11,11,Filangieri",
+            "11,12,Nunziante",
+            "11,13,Vittorio",
+            "11,14,Vesper",
+            "11,15,Caracciolo",
+            "11,16,de Perignon",
+            "11,17,Rosaroll",
+            "11,18,Fardella",
+            "12,1,Blucher",
+            "12,2,Yorck",
+            "12,3,Gneisenau",
+            "12,4,Bulow",
+            "12,5,Kleist",
+            "12,6,Scharnhorst",
+            "12,7,Jurgass",
+            "12,8,Thielmann",
+            "12,9,Pirch",
+            "12,10,William",
+            "12,11,Zieten",
+            "12,12,Boyen",
+            "12,13,Clausewitz",
+            "12,14,Grolman",
+            "12,15,Lutzow",
+            "12,16,Mollendorf",
+            "12,17,Prince August",
+            "13,1,Kutusov",
+            "13,2,Bagration",
+            "13,3,Benningsen",
+            "13,4,Barclay",
+            "13,5,Langeron",
+            "13,6,Borosdin",
+            "13,7,Gollytsin",
+            "13,8,Platov",
+            "13,9,Tormasov",
+            "13,10,Miloradovich",
+            "13,11,Wittgenstein",
+            "13,12,Dokhturov",
+            "13,13,Chernyshyov",
+            "13,14,Raevsky",
+            "13,15,Vorontsov",
+            "13,16,Tolstoy",
+            "13,17,Yermolov",
+            "13,18,Paskevitz",
+            "13,19,Ozharovsky",
+            "13,20,Kutejnikov",
+            "14,1,Bernadotte",
+            "14,2,Essen",
+            "14,3,Posse",
+            "14,4,Adlerkreutz",
+            "14,5,Klercker",
+            "14,6,Sandels",
+            "14,7,Klingspor",
+            "14,8,Skjoldebrand",
+            "14,9,Steding",
+            "14,10,Vegesack",
+            "14,11,Armfelt",
+            "14,12,Adlesparre",
+            "14,13,Bergenstranhle",
+            "14,14,Dobeln",
+            "14,15,Cederstroum",
+            "14,16,Fersen",
+            "14,17,Bjornstjerna",
+            "14,18,Wachtmeister",
+            "15,1,Mahmud II",
+            "15,2,Pasvan Oglu",
+            "15,3,Mustapha Pasha",
+            "15,4,Pechlivan Khan",
+            "15,5,Ahmed Bey",
+            "15,6,Ibrahim Bey",
+            "15,7,Ali Pasha Janina",
+            "15,8,Abdul Mecid",
+            "15,9,Kusckanz Ali",
+            "15,10,Selim III",
+            "15,11,Omer Vrioni",
+            "15,12,Dramali Pasha",
+            "15,13,Yusuf Pasha",
+            "15,14,Huseyin Efendi",
+            "15,15,Mehmed Pasha",
+            "15,16,Osman Pasha",
+            "15,17,Ebubekir Pasha",
+            "15,18,Ahmed Pasha",
+            "16,1,Poniatowski",
+            "16,2,Dombrowski",
+            "16,3,Pietrowski",
+            "16,4,Rosinski",
+            "16,5,Uminski",
+            "16,6,Zayonchek",
+            "16,7,Sokolnicki",
+            "16,8,Fisner",
+            "16,9,Sulkowski",
+            "16,10,Wielhorski",
+            "16,11,Kniaziewicz",
+            "16,12,Sowinski",
+            "16,13,Chlapowski",
+            "16,14,Chlopiski",
+            "16,15,Dembinski",
+            "16,16,Kozietulski",
+            "16,17,Krasinski",
+            "16,18,Pradzynski",
+            "16,19,Radziwill",
+            "16,20,Kossakowski",
+            "17,1,Muhamad Ali",
+            "17,2,Ibrahim Pasha",
+            "17,3,Ali Bey Al-Kabir",
+            "17,4,Usman Beg",
+            "17,5,Abu Al-Dhahab",
+            "17,6,Ahmad Khurshid",
+            "17,7,Tusun Pasha",
+            "17,8,Ibrahim Pasha",
+            "17,9,Muharram Bey",
+            "17,10,Murad Bey",
+            "17,11,Jezzar Pasha",
+            "17,12,Bey al-Bardisi",
+            "17,13,Soliman Pasha",
+            "17,14,Abidin Bey",
+            "17,15,Bey al-Alfi",
+            "17,16,Pasha Jazirli",
+            "17,17,Bey Hassan"
+    };
+
+    /**
+     * Total number of records.
+     */
+    public static final int TOTAL_RECORDS = DATA.length;
+
+    /**
+     * Default constructor.
+     */
+    public CommanderNameInitializer() {
+        super();
+        LOGGER.debug("CommanderNameInitializer instantiated.");
+    }
+
+    /**
+     * Checks if the database is properly initialized.
+     *
+     * @return true if database is not correctly initialized.
+     */
+    public boolean needsInitialization() {
+        final List<CommanderName> records = CommanderNameManager.getInstance().list();
+        return (records.size() != TOTAL_RECORDS);
+    }
+
+    /**
+     * Initializes the database by populating it with the proper records.
+     */
+    public void initialize() {
+        LOGGER.debug("CommanderNameInitializer invoked.");
+
+        // Initialize records
+        for (int i = 0; i < TOTAL_RECORDS; i++) {
+            final CommanderName thisCommanderName = new CommanderName(); //NOPMD
+            final StringTokenizer thisStk = new StringTokenizer(DATA[i], ","); // NOPMD
+
+            final int nationId = Integer.parseInt(thisStk.nextToken()); // NOPMD
+            thisCommanderName.setNation(NationManager.getInstance().getByID(nationId));
+            thisCommanderName.setPosition(Integer.parseInt(thisStk.nextToken()));
+            thisCommanderName.setName(thisStk.nextToken());
+
+            CommanderNameManager.getInstance().add(thisCommanderName);
+        }
+
+        LOGGER.info("CommanderNameInitializer complete.");
+    }
+
+}
