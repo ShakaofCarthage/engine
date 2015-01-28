@@ -14,13 +14,6 @@ Engine module includes all the source for executing player orders, conducting ba
 
 No particular configuration is necessary apart from the username/password for accessing the mysql database.
 These are provided as environmental properties (dbusername and dbpassword), that are passed using the -D<property>=<value>.
-For example:
-
-```
-mvn3 -Ddbusername=example -Ddbpassword=mypassword package
-```
-
-If you are unsure about the settings please contact ichatz@gmail.com
 
 ## Execution
 
@@ -44,6 +37,8 @@ For example:
 ```
 mvn3 -Ddbusername=example -Ddbpassword=mypassword -DscenarioId=1 -DgameId=5 -DbasePath=/srv/eaw1805 -DbuildNumber=1833 engine-run
 ```
+
+If you are unsure about the settings please contact ichatz@gmail.com
 
 
 ## Maven Repository
