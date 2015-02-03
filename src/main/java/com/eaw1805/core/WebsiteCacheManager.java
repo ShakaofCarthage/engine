@@ -1,5 +1,6 @@
 package com.eaw1805.core;
 
+import com.eaw1805.data.constants.CacheConstants;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.Page;
@@ -34,7 +35,8 @@ import java.util.concurrent.Future;
 /**
  * Connect to Website and Evict Cache.
  */
-public class WebsiteCacheManager {
+public class WebsiteCacheManager
+        implements CacheConstants {
 
     /**
      * a log4j logger to print messages.
@@ -42,116 +44,9 @@ public class WebsiteCacheManager {
     private static final Logger LOGGER = LogManager.getLogger(WebsiteCacheManager.class);
 
     /**
-     * Home url.
-     */
-    private static final String EAW_HOME_URL = "http://www.eaw1805.com/login";
-
-    /**
-     * Evict Cache Url.
-     */
-    private static final String EAW_CLEAR_CACHE_URL = "http://www.eaw1805.com/cache/evict/";
-
-    /**
-     * Fixed Pages.
-     */
-    private static final ArrayList<String> STATIC_PAGES =
-            new ArrayList<String>(Arrays.asList("http://www.eaw1805.com/home",
-                    "http://www.eaw1805.com/listgames",
-                    "http://www.eaw1805.com/hallOfFame",
-                    "http://www.eaw1805.com/scenario/list"));
-
-    /**
-     * Fixed Public Pages.
-     */
-    private static final String[] PUBLIC_PAGES = {
-            "http://www.eaw1805.com/home",
-            "http://www.eaw1805.com/news",
-            "http://www.eaw1805.com/about",
-            "http://www.eaw1805.com/terms",
-            "http://www.eaw1805.com/privacy",
-            "http://www.eaw1805.com/scenario/list",
-            "http://www.eaw1805.com/scenario/1802/info",
-            "http://www.eaw1805.com/scenario/1805/info",
-            "http://www.eaw1805.com/scenario/1805/nation/1",
-            "http://www.eaw1805.com/scenario/1805/nation/2",
-            "http://www.eaw1805.com/scenario/1805/nation/3",
-            "http://www.eaw1805.com/scenario/1805/nation/4",
-            "http://www.eaw1805.com/scenario/1805/nation/5",
-            "http://www.eaw1805.com/scenario/1805/nation/6",
-            "http://www.eaw1805.com/scenario/1805/nation/7",
-            "http://www.eaw1805.com/scenario/1805/nation/8",
-            "http://www.eaw1805.com/scenario/1805/nation/9",
-            "http://www.eaw1805.com/scenario/1805/nation/10",
-            "http://www.eaw1805.com/scenario/1805/nation/11",
-            "http://www.eaw1805.com/scenario/1805/nation/12",
-            "http://www.eaw1805.com/scenario/1805/nation/13",
-            "http://www.eaw1805.com/scenario/1805/nation/14",
-            "http://www.eaw1805.com/scenario/1805/nation/15",
-            "http://www.eaw1805.com/scenario/1805/nation/16",
-            "http://www.eaw1805.com/scenario/1805/nation/17",
-            "http://www.eaw1805.com/help/introduction",
-            "http://www.eaw1805.com/help/economy",
-            "http://www.eaw1805.com/help/trade",
-            "http://www.eaw1805.com/help/politics",
-            "http://www.eaw1805.com/help/units",
-            "http://www.eaw1805.com/help/navy",
-            "http://www.eaw1805.com/help/movement",
-            "http://www.eaw1805.com/help/warfare",
-            "http://www.eaw1805.com/help/espionage",
-            "http://www.eaw1805.com/help/other"};
-
-    /**
-     * Scenario Pages.
-     */
-    private static final String SCENARIO_PAGES = "http://www.eaw1805.com/scenario/1802/nation/";
-
-    /**
-     * Game Specific URL.
-     */
-    private static final String GAME_URL = "http://www.eaw1805.com/scenario/xxx/game/yyy/info";
-
-    /**
-     * Game Specific URL.
-     */
-    private static final String[] CLIENT_URL = {
-            "http://www.eaw1805.com/cache/scenario/xxx/game/yyy/nation/zzz",
-            "http://www.eaw1805.com/report/scenario/xxx/game/yyy/nation/zzz/overview",
-            "http://www.eaw1805.com/report/scenario/xxx/game/yyy/nation/zzz/newsletter"};
-
-    /**
-     * The Generic Game Cache Name.
-     */
-    public static final String CACHE_NAME = "gameCache";
-
-    /**
-     * The User Cache.
-     */
-    public static final String USER_CACHE_NAME = "userCache";
-
-    /**
-     * The Game Cache.
-     */
-    public static final String GAME_CACHE_NAME = "game";
-
-    /**
-     * The Client Cache.
-     */
-    public static final String CLIENT_CACHE_NAME = "client";
-
-    /**
      * The Web Client Object.
      */
     private final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_2);
-
-    /**
-     * Username.
-     */
-    public static final String USERNAME = "engine";
-
-    /**
-     * Password.
-     */
-    private static final String PASSWORD = "eaw1805";
 
     /**
      * Default Constructor.
