@@ -4,6 +4,7 @@ import com.eaw1805.algorithms.FogOfWarInspector;
 import com.eaw1805.core.initializers.AbstractThreadedInitializer;
 import com.eaw1805.core.initializers.GameInitializer;
 import com.eaw1805.core.initializers.scenario1802.ScenarioInitializer;
+import com.eaw1805.core.payment.PaymentManager;
 import com.eaw1805.data.HibernateUtil;
 import com.eaw1805.data.constants.ArmyConstants;
 import com.eaw1805.data.constants.GameConstants;

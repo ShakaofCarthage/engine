@@ -1,31 +1,21 @@
-package com.eaw1805.core;
+package com.eaw1805.core.payment;
 
+import com.eaw1805.core.EmailManager;
+import com.eaw1805.core.GameEngine;
 import com.eaw1805.data.HibernateUtil;
 import com.eaw1805.data.constants.OrderConstants;
 import com.eaw1805.data.constants.ProfileConstants;
-import com.eaw1805.data.managers.PaymentHistoryManager;
-import com.eaw1805.data.managers.PlayerOrderManager;
-import com.eaw1805.data.managers.ProfileManager;
-import com.eaw1805.data.managers.UserGameManager;
-import com.eaw1805.data.managers.UserManager;
-import com.eaw1805.data.model.Game;
-import com.eaw1805.data.model.Nation;
-import com.eaw1805.data.model.PaymentHistory;
-import com.eaw1805.data.model.PlayerOrder;
-import com.eaw1805.data.model.Profile;
-import com.eaw1805.data.model.User;
-import com.eaw1805.data.model.UserGame;
+import com.eaw1805.data.managers.*;
+import com.eaw1805.data.model.*;
 import com.eaw1805.events.EventProcessor;
 import com.eaw1805.orders.movement.FleetPatrolMovement;
 import com.eaw1805.orders.movement.ShipPatrolMovement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Transaction;
+import org.quartz.CronExpression;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Central point of access for making charges to the player accounts.
@@ -151,8 +141,6 @@ public final class PaymentManager {
                         newUserGame.setOffer(0);
                         newUserGame.setCurrent(true);
                         UserGameManager.getInstance().add(newUserGame);
-
-                        // todo: check if player is active in another game, otherwise send questionnaire
                     }
                 }
 
@@ -167,20 +155,30 @@ public final class PaymentManager {
                         }
                     }
 
-                    // Make charges
+                    // Examine only positions that have a price
                     if (userGame.getCost() > 0) {
+                        // NEW PRICING POLICY
+                        // http://forum.eaw1805.com/viewtopic.php?f=2&t=824
+                        final int originalCost = userGame.getCost();
+                        final int cost = computeGameCost(user, userGame);
+                        userGame.setCost(cost);
+
+                        // Make charges
                         chargeUser(userGame, paymentDescr.toString());
-                    }
 
-                    // Check if this position received free credits
-                    if (userGame.getOffer() > 0) {
-                        // deduct used credits
-                        userGame.setOffer(userGame.getOffer() - userGame.getCost());
+                        // Check if this position received free credits
+                        if (userGame.getOffer() > 0) {
+                            // deduct used credits
+                            userGame.setOffer(userGame.getOffer() - userGame.getCost());
 
-                        // Make sure we do not get negative offered credits
-                        if (userGame.getOffer() < 0) {
-                            userGame.setOffer(0);
+                            // Make sure we do not get negative offered credits
+                            if (userGame.getOffer() < 0) {
+                                userGame.setOffer(0);
+                            }
                         }
+
+                        // Restore position cost
+                        userGame.setCost(originalCost);
                     }
 
                     // Reset newsletter flags
@@ -200,6 +198,222 @@ public final class PaymentManager {
             UserGameManager.getInstance().update(userGame);
         }
         theTrans.commit();
+    }
+
+    /**
+     * Computes the costs of this game turn based on the number of game played by the user.
+     * All players will be charged their most expensive turns, but up to a limit of 3 turns/week; additional turns per week will not incur any charge.
+     *
+     * @param user     the user account.
+     * @param userGame the current position.
+     * @return the cost for this game turn.
+     */
+    private int computeGameCost(final User user, final UserGame userGame) {
+        int cost = userGame.getCost();
+        LOGGER.info("Nation [" + userGame.getNation().getName() + "] played by " + user.getUsername());
+
+        // compute number of turns charged this week
+        final int turnsCharged = countPayedTurns(user);
+        LOGGER.info(user.getUsername() + " already payed for " + turnsCharged + " turns this week");
+        if (turnsCharged >= 3) {
+            return 0;
+        }
+
+        // retrieve all positions of given player
+        final List<UserGame> positions = retrieveAllUserGames(user);
+        LOGGER.info(user.getUsername() + " active in " + positions.size() + " games");
+
+        // compute weekly schedules
+        final List<GameTurn> weeklyTurns = new ArrayList<GameTurn>();
+        for (final UserGame position : positions) {
+            if (position.getGame().getSchedule() > 0) {
+                weeklyTurns.addAll(identifyTurnsSimple(position));
+
+            } else {
+                weeklyTurns.addAll(identifyTurnsComplex(position));
+            }
+        }
+
+        LOGGER.info(user.getUsername() + " expected to play " + positions.size() + " turns this week");
+
+        // if the user has less than 3 processes per week, proceed without further examination
+        if (weeklyTurns.size() > 3) {
+            // Sort weekly turns based on costs
+            Collections.sort(weeklyTurns, new GameTurnComparator());
+
+            // Is this position located at top 3 places?
+            boolean topExpensive = false;
+            for (int position = 0; position < 3; position++) {
+                if (weeklyTurns.get(position).getGame().getGameId() == userGame.getGame().getGameId()) {
+                    LOGGER.info("Nation [" + userGame.getNation().getName() + "] within top-" + position + " most expensive positions");
+                    topExpensive = true;
+                    break;
+                }
+            }
+
+            // if not within
+            if (!topExpensive) {
+                LOGGER.debug("Nation [" + userGame.getNation().getName() + "] not within top-3 most expensive positions, setting cost to 0");
+                cost = 0;
+            }
+        }
+
+        LOGGER.info("Nation [" + userGame.getNation().getName() + "] turn cost set to " + cost);
+        return cost;
+    }
+
+    /**
+     * Identify number of times the game is processed during the current week.
+     *
+     * @param game the game to examine.
+     * @return a list of executions.
+     */
+    private List<GameTurn> identifyTurnsSimple(final UserGame game) {
+        LOGGER.info("Examining weekly processes for " + game.getGame().getGameId());
+
+        final List<GameTurn> weeklyTurns = new ArrayList<GameTurn>();
+
+        // Find first day of week
+        final Calendar weekStart = Calendar.getInstance();
+        weekStart.add(Calendar.DATE, -weekStart.get(Calendar.DAY_OF_WEEK));
+        weekStart.set(Calendar.HOUR, 0);
+        weekStart.set(Calendar.MINUTE, 0);
+
+        // Find first day of week
+        final Calendar weekEnd = Calendar.getInstance();
+        weekEnd.setTime(weekStart.getTime());
+        weekEnd.add(Calendar.DATE, 7);
+
+        // Retrieve all previous process
+        final List<EngineProcess> listGameWeekly = EngineProcessManager.getInstance().listGameWeekly(game.getGame().getGameId(), game.getGame().getScenarioId());
+        for (final EngineProcess process : listGameWeekly) {
+            final GameTurn thisTurn = new GameTurn();
+            thisTurn.setGame(game.getGame());
+            thisTurn.setDate(process.getDateStart());
+            thisTurn.setCost(game.getCost());
+            weeklyTurns.add(thisTurn);
+
+            LOGGER.debug("Previous process on " + process.getDateStart());
+        }
+
+        // Produce GameTurn objects
+        final Calendar nextTurn = Calendar.getInstance();
+        while (nextTurn.before(weekEnd)) {
+            final GameTurn thisTurn = new GameTurn();
+            thisTurn.setGame(game.getGame());
+            thisTurn.setDate(nextTurn.getTime());
+            thisTurn.setCost(game.getCost());
+            weeklyTurns.add(thisTurn);
+
+            LOGGER.debug("Future process on " + nextTurn.getTime());
+
+            // Identify date of previous processing
+            nextTurn.add(Calendar.DATE, game.getGame().getSchedule() - 1);
+        }
+
+        return weeklyTurns;
+    }
+
+    /**
+     * Identify number of times the game is processed during the current week.
+     *
+     * @param game the game to examine.
+     * @return a list of executions.
+     */
+    private List<GameTurn> identifyTurnsComplex(final UserGame game) {
+        LOGGER.info("Examining weekly processes for " + game.getGame().getGameId());
+
+        final List<GameTurn> weeklyTurns = new ArrayList<GameTurn>();
+
+        // Find first day of week
+        final Calendar weekStart = Calendar.getInstance();
+        weekStart.add(Calendar.DATE, -weekStart.get(Calendar.DAY_OF_WEEK));
+        weekStart.set(Calendar.HOUR, 0);
+        weekStart.set(Calendar.MINUTE, 0);
+
+        // Find first day of week
+        final Calendar weekEnd = Calendar.getInstance();
+        weekEnd.setTime(weekStart.getTime());
+        weekEnd.add(Calendar.DATE, 7);
+
+        // Retrieve all previous process
+        final List<EngineProcess> listGameWeekly = EngineProcessManager.getInstance().listGameWeekly(game.getGame().getGameId(), game.getGame().getScenarioId());
+        for (final EngineProcess process : listGameWeekly) {
+            final GameTurn thisTurn = new GameTurn();
+            thisTurn.setGame(game.getGame());
+            thisTurn.setDate(process.getDateStart());
+            thisTurn.setCost(game.getCost());
+            weeklyTurns.add(thisTurn);
+
+            LOGGER.debug("Previous process on " + process.getDateStart());
+        }
+
+        // Check if there was a processing earlier this week
+        final Calendar nextTurn = Calendar.getInstance();
+        while (nextTurn.before(weekEnd)) {
+            final GameTurn thisTurn = new GameTurn();
+            thisTurn.setGame(game.getGame());
+            thisTurn.setDate(nextTurn.getTime());
+            thisTurn.setCost(game.getCost());
+            weeklyTurns.add(thisTurn);
+
+            LOGGER.debug("Future process on " + nextTurn.getTime());
+
+            // Custom schedule
+            try {
+                final CronExpression cexp = new CronExpression(game.getGame().getCronSchedule());
+                nextTurn.setTime(cexp.getNextValidTimeAfter(nextTurn.getTime()));
+
+            } catch (Exception ex) {
+                LOGGER.error(ex);
+                LOGGER.info("Setting next processing date after 7 days.");
+                nextTurn.add(Calendar.DATE, 7);
+            }
+        }
+
+        return weeklyTurns;
+    }
+
+    /**
+     * Identify number of turns payed by the user for the current week.
+     *
+     * @param user the user account to examine.
+     * @return the number of payed turns.
+     */
+    private int countPayedTurns(final User user) {
+        int payedTurns = 0;
+
+        // retrieve records for this week
+        final List<PaymentHistory> payments = PaymentHistoryManager.getInstance().listWeekly(user);
+
+        // iterate records and count those with positive charges
+        for (PaymentHistory payment : payments) {
+            if (payment.getMethod().equals(PaymentHistory.TYPE_PROCESSING)
+                    && (payment.getChargeBought() + payment.getChargeFree() + payment.getChargeTransferred() > 0)) {
+                payedTurns++;
+            }
+        }
+
+        LOGGER.debug(user.getUsername() + " played " + payments.size() + " - " + payedTurns + " where payed.");
+        return payedTurns;
+    }
+
+    /**
+     * Retrieve all the positions of a given player.
+     *
+     * @param user the account to lookup.
+     * @return a list of active positions.
+     */
+    private List<UserGame> retrieveAllUserGames(final User user) {
+        final List<UserGame> positions = new ArrayList<UserGame>();
+        for (int scenarioId = HibernateUtil.DB_FIRST; scenarioId <= HibernateUtil.DB_LAST; scenarioId++) {
+            final Transaction thisTrans = HibernateUtil.getInstance().beginTransaction(scenarioId);
+            final List<UserGame> scenarioPositions = UserGameManager.getInstance().listActive(user);
+            positions.addAll(scenarioPositions);
+            thisTrans.rollback();
+        }
+
+        return positions;
     }
 
     /**
