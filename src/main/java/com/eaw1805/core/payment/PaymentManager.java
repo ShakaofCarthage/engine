@@ -285,6 +285,7 @@ public final class PaymentManager {
         weekEnd.add(Calendar.DATE, 7);
 
         // Retrieve all previous process
+        final Transaction mainTrans = HibernateUtil.getInstance().beginTransaction(HibernateUtil.DB_MAIN);
         final List<EngineProcess> listGameWeekly = EngineProcessManager.getInstance().listGameWeekly(game.getGame().getGameId(), game.getGame().getScenarioId());
         for (final EngineProcess process : listGameWeekly) {
             final GameTurn thisTurn = new GameTurn();
@@ -295,6 +296,7 @@ public final class PaymentManager {
 
             LOGGER.debug("Previous process on " + process.getDateStart());
         }
+        mainTrans.rollback();
 
         // Produce GameTurn objects
         final Calendar nextTurn = Calendar.getInstance();
@@ -337,6 +339,7 @@ public final class PaymentManager {
         weekEnd.add(Calendar.DATE, 7);
 
         // Retrieve all previous process
+        final Transaction mainTrans = HibernateUtil.getInstance().beginTransaction(HibernateUtil.DB_MAIN);
         final List<EngineProcess> listGameWeekly = EngineProcessManager.getInstance().listGameWeekly(game.getGame().getGameId(), game.getGame().getScenarioId());
         for (final EngineProcess process : listGameWeekly) {
             final GameTurn thisTurn = new GameTurn();
@@ -347,6 +350,7 @@ public final class PaymentManager {
 
             LOGGER.debug("Previous process on " + process.getDateStart());
         }
+        mainTrans.rollback();
 
         // Check if there was a processing earlier this week
         final Calendar nextTurn = Calendar.getInstance();
@@ -384,6 +388,7 @@ public final class PaymentManager {
         int payedTurns = 0;
 
         // retrieve records for this week
+        final Transaction mainTrans = HibernateUtil.getInstance().beginTransaction(HibernateUtil.DB_MAIN);
         final List<PaymentHistory> payments = PaymentHistoryManager.getInstance().listWeekly(user);
 
         // iterate records and count those with positive charges
@@ -393,6 +398,8 @@ public final class PaymentManager {
                 payedTurns++;
             }
         }
+
+        mainTrans.rollback();
 
         LOGGER.debug(user.getUsername() + " played " + payments.size() + " - " + payedTurns + " where payed.");
         return payedTurns;
