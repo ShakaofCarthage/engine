@@ -83,7 +83,7 @@ public class PoliticsOrderProcessor
         // retrieve 
         final int targetId = Integer.parseInt(getOrder().getParameter1());
 
-        // Retrieve target nation
+        // Retrieve winner nation
         final Nation target = NationManager.getInstance().getByID(targetId);
 
         // Retrieve relation between two nations
@@ -407,7 +407,7 @@ public class PoliticsOrderProcessor
         for (final NationsRelation thisRelation : lstRelations) {
             if (thisRelation.getRelation() == REL_WAR
                     && thisRelation.getTarget().getId() != getOrder().getNation().getId()) {
-                // Check relation with owner of order
+                // Check relation with winner of order
                 final NationsRelation theirRelation = RelationsManager.getInstance().getByNations(getOrder().getGame(),
                         thisRelation.getTarget(), getOrder().getNation());
                 if (theirRelation.getRelation() == REL_ALLIANCE) {
@@ -426,23 +426,23 @@ public class PoliticsOrderProcessor
         }
     }
 
-    private void surrenderOffer(final Nation target, final NationsRelation relation, final PlayerOrder thatOrder) {
+    private void surrenderOffer(final Nation winner, final NationsRelation relation, final PlayerOrder thatOrder) {
         // Return all sectors conquered by nation surrendering
-        returnHomeRegionSectors(target, getOrder().getNation());
+        returnHomeRegionSectors(getOrder().getNation(), winner);
 
         // Return the capital of nation surrendering if it was captured by the nation accepting the surrender
-        returnCapital(getOrder().getNation(), target);
+        returnCapital(getOrder().getNation(), winner);
 
         // Return prisoners of war
         if (relation.getPrisoners() > 0) {
             final NumberFormat formatter = new DecimalFormat("#,###,###");
-            newsGlobal(getOrder().getNation(), target, NEWS_POLITICAL,
-                    "We released " + formatter.format(relation.getPrisoners()) + " prisoners of " + target.getName(),
+            newsGlobal(getOrder().getNation(), winner, NEWS_POLITICAL,
+                    "We released " + formatter.format(relation.getPrisoners()) + " prisoners of " + winner.getName(),
                     getOrder().getNation().getName() + " released " + formatter.format(relation.getPrisoners()) + " of our soldiers held prisoners of war.",
-                    getOrder().getNation().getName() + " released " + formatter.format(relation.getPrisoners()) + " of soldiers of " + target.getName() + " held prisoners of war.");
+                    getOrder().getNation().getName() + " released " + formatter.format(relation.getPrisoners()) + " of soldiers of " + winner.getName() + " held prisoners of war.");
 
             // Prisoners go directly to warehouse
-            getParent().incTotGoods(target.getId(), EUROPE, GoodConstants.GOOD_PEOPLE, relation.getPrisoners());
+            getParent().incTotGoods(winner.getId(), EUROPE, GoodConstants.GOOD_PEOPLE, relation.getPrisoners());
 
             // Update goods used by other order
             final Map<Integer, Integer> usedGoods = new HashMap<Integer, Integer>();
@@ -454,7 +454,7 @@ public class PoliticsOrderProcessor
         }
 
         // Return captured commanders
-        final List<Commander> lstCommanders = CommanderManager.getInstance().listGameNation(getParent().getGame(), target);
+        final List<Commander> lstCommanders = CommanderManager.getInstance().listGameNation(getParent().getGame(), winner);
         for (Commander commander : lstCommanders) {
             if (commander.getCaptured().getId() == getOrder().getNation().getId()) {
                 // Release commander
@@ -462,10 +462,10 @@ public class PoliticsOrderProcessor
                 commander.setPool(true);
                 CommanderManager.getInstance().update(commander);
 
-                newsGlobal(getOrder().getNation(), target, NEWS_POLITICAL,
-                        "We released captured commander " + commander.getName() + " of " + target.getName(),
+                newsGlobal(getOrder().getNation(), winner, NEWS_POLITICAL,
+                        "We released captured commander " + commander.getName() + " of " + winner.getName(),
                         getOrder().getNation().getName() + " released captured commander " + commander.getName() + ".",
-                        getOrder().getNation().getName() + " released captured commander " + commander.getName() + " of " + target.getName() + ".");
+                        getOrder().getNation().getName() + " released captured commander " + commander.getName() + " of " + winner.getName() + ".");
             }
         }
 
@@ -476,7 +476,7 @@ public class PoliticsOrderProcessor
         RelationsManager.getInstance().update(relation);
 
         // We lose 20 VPs
-        changeVP(getOrder().getGame(), getOrder().getNation(), POLITICS_SURRENDER, "Surrender to " + target.getName());
+        changeVP(getOrder().getGame(), getOrder().getNation(), POLITICS_SURRENDER, "Surrender to " + winner.getName());
 
         // Modify player's profile
         changeProfile(getOrder().getNation(), ProfileConstants.SURRENDERS_MADE, 1);
@@ -710,7 +710,7 @@ public class PoliticsOrderProcessor
      *
      * @param thisGame the game to inspect.
      * @param owner    the nation declared war.
-     * @param newEnemy the owner to check ships.
+     * @param newEnemy the winner to check ships.
      */
     private void removeEnemyShips(final Game thisGame, final Nation owner, final Nation newEnemy) {
         final List<Sector> lstBarracks = SectorManager.getInstance().listBarracksByGameNation(thisGame, owner);
@@ -799,7 +799,7 @@ public class PoliticsOrderProcessor
      *
      * @param thisGame the game to inspect.
      * @param owner    the nation declared war.
-     * @param newEnemy the owner to check ships.
+     * @param newEnemy the winner to check ships.
      */
     private void removeEnemyTrains(final Game thisGame, final Nation owner, final Nation newEnemy) {
         final List<Sector> lstBarracks = SectorManager.getInstance().listBarracksByGameNation(thisGame, owner);
@@ -869,26 +869,35 @@ public class PoliticsOrderProcessor
 
     /**
      * Inspect home region sectors and those conquered are returned.
+     * Captured home territories of the winning empire are returned to the winner,
+     * however no home territories of the surrendering empire are returned (Capitals are always returned)
      *
-     * @param owner     the home nation.
-     * @param conqueror the conqueror nation.
+     * @param loser     the home nation.
+     * @param winner the winner nation.
      */
-    private void returnHomeRegionSectors(final Nation owner, final Nation conqueror) {
+    private void returnHomeRegionSectors(final Nation loser, final Nation winner) {
+        final Game thisGame = getOrder().getGame();
         final Game initGame = GameManager.getInstance().getByID(-1);
         final Region europe = RegionManager.getInstance().getByID(EUROPE);
-        final List<Sector> initSectors = SectorManager.getInstance().listByGameRegionNation(initGame, europe, owner);
+        final List<Sector> initSectors = SectorManager.getInstance().listByGameRegionNation(initGame, europe, winner);
         for (final Sector sector : initSectors) {
             final Position thisPos = (Position) sector.getPosition().clone();
-            thisPos.setGame(getOrder().getGame());
+            thisPos.setGame(thisGame);
+
+            if (sector.getId() == 79916
+                    || sector.getId() == 79917
+                    || sector.getId() == 79919) {
+                LOGGER.debug("check this");
+            }
 
             // Lookup sector in current game
             final Sector thisSector = SectorManager.getInstance().getByPosition(thisPos);
 
-            if (thisSector.getNation() == conqueror
-                    || thisSector.getTempNation() == conqueror) {
-                // Return sector to owner
-                thisSector.setNation(owner);
-                thisSector.setTempNation(owner);
+            if (thisSector.getNation().getId() == loser.getId()
+                    || thisSector.getTempNation().getId() == loser.getId()) {
+                // Return sector to winner
+                thisSector.setNation(winner);
+                thisSector.setTempNation(winner);
                 thisSector.setConqueredCounter(0);
                 SectorManager.getInstance().update(thisSector);
 
@@ -896,21 +905,27 @@ public class PoliticsOrderProcessor
                 if (thisSector.getProductionSite() != null && thisSector.getProductionSite().getId() >= ProductionSiteConstants.PS_BARRACKS) {
                     // also hand-over barrack
                     final Barrack barrack = BarrackManager.getInstance().getByPosition(thisSector.getPosition());
-                    barrack.setNation(owner);
+                    barrack.setNation(winner);
                     BarrackManager.getInstance().update(barrack);
                 }
             }
         }
     }
 
-    private void returnCapital(final Nation owner, final Nation conqueror) {
+    /**
+     * If the Capital of the winner is controlled by the winner, then it is returned to the winner.
+     *
+     * @param loser     the home nation.
+     * @param winner the winner nation.
+     */
+    private void returnCapital(final Nation loser, final Nation winner) {
         final Game initGame = GameManager.getInstance().getByID(-1);
         final List<TradeCity> initTradeCities = TradeCityManager.getInstance().listByGame(initGame);
 
         for (final TradeCity initCity : initTradeCities) {
-            // Retrieve owner of trade city when game starts
+            // Retrieve winner of trade city when game starts
             if (initCity.getPosition().getRegion().getId() == EUROPE
-                    && initCity.getNation().getId() == owner.getId()) {
+                    && initCity.getNation().getId() == loser.getId()) {
 
                 final Position thisPos = (Position) initCity.getPosition().clone();
                 thisPos.setGame(getOrder().getGame());
@@ -918,11 +933,11 @@ public class PoliticsOrderProcessor
                 // Lookup sector in current game
                 final Sector thisSector = SectorManager.getInstance().getByPosition(thisPos);
 
-                if (thisSector.getNation() == conqueror
-                        || thisSector.getTempNation() == conqueror) {
-                    // Return sector to owner
-                    thisSector.setNation(owner);
-                    thisSector.setTempNation(owner);
+                if (thisSector.getNation() == winner
+                        || thisSector.getTempNation() == winner) {
+                    // Return sector to winner
+                    thisSector.setNation(loser);
+                    thisSector.setTempNation(loser);
                     thisSector.setConqueredCounter(0);
                     SectorManager.getInstance().update(thisSector);
 
@@ -930,7 +945,7 @@ public class PoliticsOrderProcessor
                     if (thisSector.getProductionSite() != null && thisSector.getProductionSite().getId() >= ProductionSiteConstants.PS_BARRACKS) {
                         // also hand-over barrack
                         final Barrack barrack = BarrackManager.getInstance().getByPosition(thisSector.getPosition());
-                        barrack.setNation(owner);
+                        barrack.setNation(loser);
                         BarrackManager.getInstance().update(barrack);
                     }
                 }
@@ -966,7 +981,7 @@ public class PoliticsOrderProcessor
      *
      * @param thisGame the game to inspect.
      * @param owner    the nation declared war.
-     * @param newEnemy the owner to check ships.
+     * @param newEnemy the winner to check ships.
      */
     private void removeShips(final Game thisGame, final Nation owner, final Nation newEnemy) {
         final List<Sector> lstBarracks = SectorManager.getInstance().listBarracksByGameNation(thisGame, owner);
