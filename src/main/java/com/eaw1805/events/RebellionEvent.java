@@ -80,7 +80,8 @@ public class RebellionEvent
                 continue;
             }
 
-            // Rebellions only take place in occupied home nation coordinates of active enemies (must be at war and also a non-dead empire).
+            // Rebellions only take place in occupied home nation coordinates of active enemies
+            // (must be at war and also a non-dead empire).
             if (!activeNations.contains(originalNation)) {
                 continue;
             }
@@ -98,7 +99,7 @@ public class RebellionEvent
             }
 
             // Each coordinate has a 2% probability to rebel
-            int baseRoll = 2;
+            int baseRoll = 3;
 
             // If the empire uses 'harsh' or “low” taxation the chance for rebellion is doubled or halved respectively.
             // check taxation orders
