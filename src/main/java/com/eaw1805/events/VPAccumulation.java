@@ -159,5 +159,70 @@ public class VPAccumulation
                 }
             }
         }
+
+        // Scenario 1808
+        if (getGame().getScenarioId() == HibernateUtil.DB_S3) {
+
+            // +1 per turn for each Trade city owned
+            final Map<Nation, Integer> totCities = new HashMap<Nation, Integer>();
+            totCities.put(NationManager.getInstance().getByID(NATION_SPAIN), 0);
+            totCities.put(NationManager.getInstance().getByID(NATION_FRANCE), 0);
+            totCities.put(NationManager.getInstance().getByID(NATION_GREATBRITAIN), 0);
+
+            final List<TradeCity> lstCities = TradeCityManager.getInstance().listByGame(thisGame);
+            for (TradeCity lstCity : lstCities) {
+                final Nation cityOwner = lstCity.getNation();
+                if (totCities.containsKey(lstCity.getNation())) {
+                    final int curCityCounter = totCities.get(lstCity.getNation());
+                    totCities.put(cityOwner, curCityCounter + 1);
+                }
+            }
+
+            for (Map.Entry<Nation, Integer> entry : totCities.entrySet()) {
+                changeVP(thisGame, entry.getKey(), CONTROL_TRADE_CITY * entry.getValue(),
+                        "For each Trade City owned (" + entry.getValue() + ")");
+            }
+
+            // -2 per turn if capital under foreign occupation (Madrid, Lisbon, Bordeaux)
+            // Lookup Madrid
+            final Position posMadrid = new Position();
+            posMadrid.setGame(thisGame);
+            posMadrid.setRegion(RegionManager.getInstance().getByID(EUROPE));
+            posMadrid.setX(23);
+            posMadrid.setY(18);
+
+            final Sector secMadrid = SectorManager.getInstance().getByPosition(posMadrid);
+            if (secMadrid.getNation().getId() != NATION_SPAIN) {
+                changeVP(thisGame, NationManager.getInstance().getByID(NATION_SPAIN), CONTROL_CAPITAL,
+                        "Capital under foreign occupation");
+            }
+
+            // Lookup Lisbon
+            final Position posLisbon = new Position();
+            posLisbon.setGame(thisGame);
+            posLisbon.setRegion(RegionManager.getInstance().getByID(EUROPE));
+            posLisbon.setX(4);
+            posLisbon.setY(25);
+
+            final Sector secLisbon = SectorManager.getInstance().getByPosition(posLisbon);
+            if (secLisbon.getNation().getId() != NATION_GREATBRITAIN) {
+                changeVP(thisGame, NationManager.getInstance().getByID(NATION_GREATBRITAIN), CONTROL_CAPITAL,
+                        "Capital under foreign occupation");
+            }
+
+            // Lookup Bordeaux
+            final Position posBordeaux = new Position();
+            posBordeaux.setGame(thisGame);
+            posBordeaux.setRegion(RegionManager.getInstance().getByID(EUROPE));
+            posBordeaux.setX(31);
+            posBordeaux.setY(0);
+
+            final Sector secBordeaux = SectorManager.getInstance().getByPosition(posBordeaux);
+            if (secBordeaux.getNation().getId() != NATION_FRANCE) {
+                changeVP(thisGame, NationManager.getInstance().getByID(NATION_FRANCE), CONTROL_CAPITAL,
+                        "Capital under foreign occupation");
+            }
+
+        }
     }
 }
