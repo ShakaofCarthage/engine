@@ -61,7 +61,7 @@ public class ShipPatrolMovement
         // Check if passing through storms
         if (sector.getStorm() > 0) {
             // The ship will suffer an additional 0-4% attrition
-            int rndNum = getParent().getRandomGen().nextInt(4);
+            int rndNum = getParent().getRandomGen().nextInt(5);
 
             // Dhows and Corsairs suffer double attrition when crossing storms
             if (entity.getType().getIntId() == 6

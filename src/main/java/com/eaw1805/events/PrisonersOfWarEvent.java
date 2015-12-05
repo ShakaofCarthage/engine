@@ -65,7 +65,7 @@ public class PrisonersOfWarEvent
 
                 if (relation.getPrisoners() > 0) {
                     // Each month, a random number of prisoners (5-10%) die from hardships, bad nutrition etc.
-                    final int deathRate = getRandomGen().nextInt(4) + 2;
+                    final int deathRate = getRandomGen().nextInt(5) + 2;
                     final int deadPOW = relation.getPrisoners() * deathRate / 100;
                     relation.setPrisoners(relation.getPrisoners() - deadPOW);
                     if (relation.getPrisoners() < 0) {

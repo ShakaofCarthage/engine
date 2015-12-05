@@ -1144,7 +1144,7 @@ public abstract class AbstractMovement<TypeOfUnit extends MapElement>
                 rollTarget = Math.min(10, rollTarget);
 
                 // Throw roll
-                final int roll = getParent().getRandomGen().nextInt(100) + 1;
+                final int roll = getParent().getRandomGen().nextInt(101) + 1;
                 if (roll < rollTarget) {
                     tonnage += theOrder.getTonnage();
                     theOrder.setTriggered(true);
@@ -1270,7 +1270,7 @@ public abstract class AbstractMovement<TypeOfUnit extends MapElement>
                     // the merchant ships will be captured 33% of the time,
                     // destroyed 33% of the time,
                     // or will stay with their owner 33% of the time
-                    final int roll = getParent().getRandomGen().nextInt(100) + 1;
+                    final int roll = getParent().getRandomGen().nextInt(101) + 1;
                     if (roll < 33) {
                         // captured
                         // choose random overrunner
@@ -1373,7 +1373,7 @@ public abstract class AbstractMovement<TypeOfUnit extends MapElement>
             // the merchant ships will be captured 33% of the time,
             // destroyed 33% of the time,
             // or will stay with their owner 33% of the time
-            final int roll = getParent().getRandomGen().nextInt(100) + 1;
+            final int roll = getParent().getRandomGen().nextInt(101) + 1;
             if (roll < 33) {
                 // captured
                 thisShip.setCapturedByNation(chaseNation.getId());
@@ -1484,7 +1484,7 @@ public abstract class AbstractMovement<TypeOfUnit extends MapElement>
                 // the merchant ships will be captured 33% of the time,
                 // destroyed 33% of the time,
                 // or will stay with their owner 33% of the time
-                final int roll = getParent().getRandomGen().nextInt(100) + 1;
+                final int roll = getParent().getRandomGen().nextInt(101) + 1;
                 if (roll < 33) {
                     totShips++;
 
@@ -1989,7 +1989,7 @@ public abstract class AbstractMovement<TypeOfUnit extends MapElement>
                             final Ship theShip = (Ship) theUnit;
 
                             // The ship will suffer an attrition of 1-2%
-                            final int rndNum = getParent().getRandomGen().nextInt(1) + 1;
+                            final int rndNum = getParent().getRandomGen().nextInt(2) + 1;
 
                             theShip.setCondition(theShip.getCondition() - rndNum);
                             ShipManager.getInstance().update(theShip);
@@ -2000,7 +2000,7 @@ public abstract class AbstractMovement<TypeOfUnit extends MapElement>
                                     theFleet.getFleetId());
 
                             // The ship will suffer an attrition of 1-2%
-                            final int rndNum = getParent().getRandomGen().nextInt(1) + 1;
+                            final int rndNum = getParent().getRandomGen().nextInt(2) + 1;
 
                             for (final Ship theShip : lstShips) {
                                 theShip.setCondition(theShip.getCondition() - rndNum);
@@ -2010,7 +2010,7 @@ public abstract class AbstractMovement<TypeOfUnit extends MapElement>
                         } else if (theUnit instanceof BaggageTrain) {
                             final BaggageTrain theTrain = (BaggageTrain) theUnit;
 
-                            int rndNum = getParent().getRandomGen().nextInt(1) + 1;
+                            int rndNum = getParent().getRandomGen().nextInt(2) + 1;
 
                             if (isSevereWinter(theTrain.getPosition())) {
                                 // Here isWinter argument is used to signify if item is jumping to another region

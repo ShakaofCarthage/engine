@@ -138,7 +138,7 @@ public class ArmyMaintenance
                         // Battalions are not supplied in the colonies, they will lose 10-20%.
                         modifier = 10;
                     }
-                    final int roll = getRandomGen().nextInt(range) + modifier;
+                    final int roll = getRandomGen().nextInt(range + 1) + modifier;
                     final int lostSoldiers = (int) (thisBattalion.getHeadcount() * roll / 100d);
 
                     // remove soldiers
@@ -309,15 +309,15 @@ public class ArmyMaintenance
         int randomDeduction;
         if (region == EUROPE) {
             // Battalions that are not supplied will lose 5 - 15% of their soldiers due to desertion and hunger.
-            randomDeduction = getRandomGen().nextInt(11) + 5;
+            randomDeduction = getRandomGen().nextInt(12) + 5;
 
             if (nation == NATION_FRANCE || nation == NATION_RUSSIA) {
-                randomDeduction = getRandomGen().nextInt(5) + 1;
+                randomDeduction = getRandomGen().nextInt(6) + 1;
             }
 
         } else {
             // If Battalions are not supplied in the colonies, they will lose 10-20% of their soldiers.
-            randomDeduction = getRandomGen().nextInt(11) + 10;
+            randomDeduction = getRandomGen().nextInt(12) + 10;
         }
         return randomDeduction;
     }

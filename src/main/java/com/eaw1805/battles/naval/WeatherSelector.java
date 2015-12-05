@@ -75,7 +75,7 @@ public class WeatherSelector
      */
     private int getEuropeHigh(final Calendar thisCal) {
         final int month = thisCal.get(Calendar.MONTH);
-        final int roll = randomGen.nextInt(100) + 1;
+        final int roll = randomGen.nextInt(101) + 1;
         int weather;
         switch (month) {
             case 0:
@@ -212,7 +212,7 @@ public class WeatherSelector
      */
     private int getEuropeMed(final Calendar thisCal) {
         final int month = thisCal.get(Calendar.MONTH);
-        final int roll = randomGen.nextInt(100) + 1;
+        final int roll = randomGen.nextInt(101) + 1;
         int weather;
         switch (month) {
             case 0:
@@ -361,7 +361,7 @@ public class WeatherSelector
      */
     private int getEuropeLow(final Calendar thisCal) {
         final int month = thisCal.get(Calendar.MONTH);
-        final int roll = randomGen.nextInt(100) + 1;
+        final int roll = randomGen.nextInt(101) + 1;
         int weather;
         switch (month) {
             case 0:

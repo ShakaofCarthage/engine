@@ -41,7 +41,7 @@ public class MountedArtilleryLongRangeCombat
         if (getParent().getFortAttackFactor() > 750d) {
             return getParent().getFortAttackFactor()
                     * terrainFactorAr()
-                    * (getParent().getRandomGen().nextInt(1) + 1);
+                    * (getParent().getRandomGen().nextInt(2) + 1);
         } else {
             return 0d;
         }

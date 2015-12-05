@@ -57,7 +57,7 @@ public class CaptureCommanders
         if (winningSide == RoundStatistics.SIDE_NONE) {
             // Each commander has a 2% chance of getting killed
             for (int side = 0; side < 2; side++) {
-                final int randomKill = getParent().getRandomGen().nextInt(100) + 1;
+                final int randomKill = getParent().getRandomGen().nextInt(101) + 1;
                 if (randomKill <= 2) {
                     // Commander captured
                     statRound[side][2] = 1;
@@ -135,7 +135,7 @@ public class CaptureCommanders
             }
 
             // The commander of the losing army has a 8% chance of dying on the field of honor.
-            final int randomKilled = getParent().getRandomGen().nextInt(100) + 1;
+            final int randomKilled = getParent().getRandomGen().nextInt(101) + 1;
             if (randomKilled <= 8) {
                 // Commander captured
                 statRound[losingSide][2] = 1;
@@ -198,7 +198,7 @@ public class CaptureCommanders
                 targetRoll = combatPoints[winningSide];
 
                 // Roll chances
-                final int randomRoll = getParent().getRandomGen().nextInt(100) + 1;
+                final int randomRoll = getParent().getRandomGen().nextInt(101) + 1;
                 if (randomRoll <= targetRoll) {
                     // Commander died
                     statRound[losingSide][2] = 1;
@@ -243,7 +243,7 @@ public class CaptureCommanders
             }
 
             // The commander of the winning army has a 2% chance of dying on the field of honor.
-            final int randomWinnerKilled = getParent().getRandomGen().nextInt(100) + 1;
+            final int randomWinnerKilled = getParent().getRandomGen().nextInt(101) + 1;
             if (randomWinnerKilled <= 2) {
                 // Commander captured
                 statRound[winningSide][2] = 1;

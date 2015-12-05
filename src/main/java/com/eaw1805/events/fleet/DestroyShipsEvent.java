@@ -137,7 +137,7 @@ public class DestroyShipsEvent
                 double goal = (50 - ship.getCondition()) ^ 2;
                 goal /= 25d;
 
-                if (randomGen.nextInt(100) + 1 < goal) {
+                if (randomGen.nextInt(101) + 1 < goal) {
                     // Report destruction of ship.
                     destroyShip(ship);
                     isDestroyed = true;

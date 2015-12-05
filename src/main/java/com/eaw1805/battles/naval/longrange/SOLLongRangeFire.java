@@ -180,7 +180,7 @@ public class SOLLongRangeFire
             changeProfile(getParent().getGame(), shipPair.getShipB().getNation(), ProfileConstants.ENEMY_KILLED_MAR, losesA);
 
             // Check if Side A ship will sink
-            final int rollA = getParent().getRandomGen().nextInt(100) + 1;
+            final int rollA = getParent().getRandomGen().nextInt(101) + 1;
             if (shipPair.getShipA().getCondition() < 60 && rollA <= (60 - shipPair.getShipA().getCondition())) {
                 // The ship has sunk
                 final Ship sunkShip = shipPair.getShipA();
@@ -239,7 +239,7 @@ public class SOLLongRangeFire
             changeProfile(getParent().getGame(), shipPair.getShipA().getNation(), ProfileConstants.ENEMY_KILLED_MAR, losesB);
 
             // Check if Side B ship will sink
-            final int rollB = getParent().getRandomGen().nextInt(100) + 1;
+            final int rollB = getParent().getRandomGen().nextInt(101) + 1;
             if (shipPair.getShipB().getCondition() < 60 && rollB <= (60 - shipPair.getShipB().getCondition())) {
                 // The ship has sunk
                 final Ship sunkShip = shipPair.getShipB();

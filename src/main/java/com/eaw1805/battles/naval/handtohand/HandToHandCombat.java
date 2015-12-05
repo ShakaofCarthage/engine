@@ -116,7 +116,7 @@ public class HandToHandCombat
                             morale--;
                         }
 
-                        final int roll = getParent().getRandomGen().nextInt(100) + 1;
+                        final int roll = getParent().getRandomGen().nextInt(101) + 1;
                         if (roll <= 30 + (5 * morale)) {
 
                             // find target
@@ -288,7 +288,7 @@ public class HandToHandCombat
                     && shipPair.getShipB().getCondition() > 0) {
 
                 // there is a 25% chance of the ships separating
-                final int roll = getParent().getRandomGen().nextInt(100) + 1;
+                final int roll = getParent().getRandomGen().nextInt(101) + 1;
                 if (roll > 25) {
                     // keep them for next round
                     final ShipPair newSP = new ShipPair(shipPair.getShipA(), shipPair.getShipB());
@@ -412,7 +412,7 @@ public class HandToHandCombat
         // Try to find 1st targetShip of same class
         final Ship targetA2 = findTargetShipSameClass(thisShip, enemySide);
 
-        final int roll = getParent().getRandomGen().nextInt(100) + 1;
+        final int roll = getParent().getRandomGen().nextInt(101) + 1;
 
         // Check if 1st targetShip will be chosen
         if (roll <= 50) {

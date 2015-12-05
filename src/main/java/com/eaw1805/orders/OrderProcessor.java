@@ -611,7 +611,7 @@ public class OrderProcessor
                 if (!subList.isEmpty()) {
                     // Roll dices for each nation
                     for (final Nation nation : lstNation) {
-                        nation.setWeight(getRandomGen().nextInt() * 100 + nation.getId());
+                        nation.setWeight(getRandomGen().nextInt(101) + nation.getId());
                     }
 
                     // Sort orders based on rolls
@@ -632,7 +632,7 @@ public class OrderProcessor
         if (!subList.isEmpty()) {
             // Roll dices for each nation
             for (final Nation nation : lstNation) {
-                nation.setWeight(getRandomGen().nextInt() * 100 + nation.getId());
+                nation.setWeight(getRandomGen().nextInt(101) + nation.getId());
             }
 
             // Sort orders based on rolls
@@ -1480,7 +1480,7 @@ public class OrderProcessor
 
         // Roll ships
         final List<Ship> side = new ArrayList<Ship>();
-        final int count = getGameEngine().getRandomGen().nextInt(5) + 1;
+        final int count = getGameEngine().getRandomGen().nextInt(6) + 1;
         for (int shipCnt = 0; shipCnt < count; shipCnt++) {
             final Ship pirateShip = new Ship();
             pirateShip.setNation(pirates);
@@ -1490,7 +1490,7 @@ public class OrderProcessor
             pirateShip.setNoWine(false);
 
             ShipType thisType;
-            final int roll = getGameEngine().getRandomGen().nextInt(100) + 1;
+            final int roll = getGameEngine().getRandomGen().nextInt(101) + 1;
             if (roll < 40) {
                 // Class 1
                 thisType = ShipTypeManager.getInstance().getByID(1);
@@ -1556,9 +1556,9 @@ public class OrderProcessor
             final List<Ship> lstShips = prepareShipList();
             final List<Fleet> lstFleets = prepareFleetList();
 
-            final int roll = getGameEngine().getRandomGen().nextInt(100) + 1;
+            final int roll = getGameEngine().getRandomGen().nextInt(101) + 1;
             if (roll <= 20) {
-                int count = getGameEngine().getRandomGen().nextInt(2) + 1;
+                int count = getGameEngine().getRandomGen().nextInt(3) + 1;
 
                 while ((count > 0) && (!lstShips.isEmpty() || !lstFleets.isEmpty())) {
                     // Prepare forces
@@ -1587,7 +1587,7 @@ public class OrderProcessor
                         field = pickRandomSector(piratesTargetFlt.get(thisFleet));
 
                     } else {
-                        final int choose = getGameEngine().getRandomGen().nextInt(2) + 1;
+                        final int choose = getGameEngine().getRandomGen().nextInt(3) + 1;
                         if (choose == 1 && (!lstShips.isEmpty() || lstFleets.isEmpty())) {
                             // pick a merchant ship
                             java.util.Collections.shuffle(lstShips);
@@ -1692,7 +1692,7 @@ public class OrderProcessor
                 }
 
                 // Apply rules to capture or destroy ships under construction
-                final int roll = getRandomGen().nextInt(100) + 1;
+                final int roll = getRandomGen().nextInt(101) + 1;
                 if (roll <= 25) {
                     // 25% chance per ship will be captured and be available to the conqueror
                     cntCaptured++;
@@ -2078,7 +2078,7 @@ public class OrderProcessor
                 }
 
                 // Apply rules to capture or destroy train under construction
-                final int roll = getRandomGen().nextInt(100) + 1;
+                final int roll = getRandomGen().nextInt(101) + 1;
                 if (roll <= 25) {
                     // 75% chance per train will be captured and be available to the conqueror
                     cntCaptured++;
@@ -2180,7 +2180,7 @@ public class OrderProcessor
                         }
 
                         // Apply rules to capture or destroy train under construction
-                        final int roll = getRandomGen().nextInt(100) + 1;
+                        final int roll = getRandomGen().nextInt(101) + 1;
                         if (roll <= 25) {
                             // 75% chance per train will be captured and be available to the conqueror
                             capturedTrains++;

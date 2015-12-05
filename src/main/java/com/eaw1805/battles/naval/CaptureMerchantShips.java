@@ -115,7 +115,7 @@ public class CaptureMerchantShips
                     merShips.remove(roll);
 
                     // apply damages
-                    final int damage = getParent().getRandomGen().nextInt(10) + 10;
+                    final int damage = getParent().getRandomGen().nextInt(11) + 10;
                     capturedShip.setCondition(capturedShip.getCondition() - damage);
                     capturedShip.setCapturedByNation(getParent().getSideShips()[side].get(0).getNation().getId());
 
@@ -159,7 +159,7 @@ public class CaptureMerchantShips
                     && (ship.getMarines() > 0)
                     && (ship.getCapturedByNation() == 0)) {
 
-                final int roll = getParent().getRandomGen().nextInt(100) + 1;
+                final int roll = getParent().getRandomGen().nextInt(101) + 1;
                 int target;
                 switch (ship.getType().getShipClass()) {
                     case 1:

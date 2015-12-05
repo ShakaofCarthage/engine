@@ -214,7 +214,7 @@ public class EspionageEvent
                 strBld.append(":");
 
                 // add error in report
-                final int roll = getRandomGen().nextInt(Math.abs(error * 2)) - error;
+                final int roll = getRandomGen().nextInt(1 + Math.abs(error * 2)) - error;
                 final int value = (int) (((100d + roll) / 100d) * entry.getValue().intValue());
 
                 strBld.append(value);
@@ -249,7 +249,7 @@ public class EspionageEvent
                 strBld.append(":");
 
                 // add error in report
-                final int roll = getRandomGen().nextInt(Math.abs(error * 2)) - error;
+                final int roll = getRandomGen().nextInt(1 + Math.abs(error * 2)) - error;
                 final int value = (int) (((100d + roll) / 100d) * entry.getValue().intValue());
 
                 strBld.append(value);
@@ -338,7 +338,7 @@ public class EspionageEvent
                 strBld.append(":");
 
                 // add error in report
-                final int roll = getRandomGen().nextInt(error * 2) - error;
+                final int roll = getRandomGen().nextInt(1 + error * 2) - error;
                 final int value = (int) (((100d + roll) / 100d) * entry.getValue().intValue());
 
                 strBld.append(value);

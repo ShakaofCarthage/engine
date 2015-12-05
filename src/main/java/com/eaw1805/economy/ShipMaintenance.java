@@ -85,7 +85,7 @@ public class ShipMaintenance extends AbstractMaintenance {
             } else {
                 // The ship was not maintained properly
                 // When ships maintenance is not paid, there a 5-15% chance of them deserting.
-                final int roll = getRandomGen().nextInt(100) + 1;
+                final int roll = getRandomGen().nextInt(101) + 1;
                 if (roll <= 15) {
                     // it is lost
                     newsSingle(thisShip.getNation(), NEWS_ECONOMY, "We did not have enough money to pay the monthly salaries for the sailors of " + thisShip.getName() + ". The sailors declared mutiny and took over our ship.");

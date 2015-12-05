@@ -1039,7 +1039,7 @@ public class WarfareProcessor
                     // Choose a nation randomly
                     if (newOwner == null) {
                         for (final Nation nation : side1set) {
-                            final int roll = getRandomGen().nextInt(100) + 1;
+                            final int roll = getRandomGen().nextInt(101) + 1;
                             if (roll < (100 * nationBattalions.get(nation) / sideTotBattalions[RoundStatistics.SIDE_A])) {
                                 newOwner = nation;
                                 break;
@@ -1101,7 +1101,7 @@ public class WarfareProcessor
                     if (newOwner == null) {
                         newOwner = side2set.iterator().next();
                         for (final Nation nation : side2set) {
-                            final int roll = getRandomGen().nextInt(100) + 1;
+                            final int roll = getRandomGen().nextInt(101) + 1;
                             if (roll < (100 * nationBattalions.get(nation) / sideTotBattalions[RoundStatistics.SIDE_B])) {
                                 newOwner = nation;
                                 break;

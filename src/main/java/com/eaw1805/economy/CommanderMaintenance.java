@@ -112,7 +112,7 @@ public class CommanderMaintenance
                 reportUnpaidCommander(thisCommander, unpaidCommanders[nationId]);
 
                 // Commanders will desert in not paid with a chance of 50%
-                final int roll = getRandomGen().nextInt(100) + 1;
+                final int roll = getRandomGen().nextInt(101) + 1;
                 if (roll > 50) {
                     LOGGER.info("Unpaid Commander [Commander=" + thisCommander.getId() + "] abandoned his post");
                     newsSingle(thisCommander.getNation(), NEWS_ECONOMY, "We did not have enough money to pay the monthly salary of " + thisCommander.getName() + ". He abandoned his post.");

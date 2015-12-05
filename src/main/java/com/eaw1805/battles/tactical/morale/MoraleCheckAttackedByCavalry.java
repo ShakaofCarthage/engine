@@ -123,7 +123,7 @@ public class MoraleCheckAttackedByCavalry
                         experience++;
                     }
 
-                    final int roll = getParent().getRandomGen().nextInt(100);
+                    final int roll = getParent().getRandomGen().nextInt(101);
 
                     // 5% bonus if in home coordinate
                     int homeBonus = 0;
@@ -183,7 +183,7 @@ public class MoraleCheckAttackedByCavalry
                         statRound[side][3]++;
                     }
 
-                    final int roll = getParent().getRandomGen().nextInt(100);
+                    final int roll = getParent().getRandomGen().nextInt(101);
 
                     // check if they will flee
                     if (roll >= 50 + (experience * 5) - penalty) {

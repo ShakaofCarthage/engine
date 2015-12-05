@@ -77,7 +77,7 @@ public class RaiseExperience
                 if (battalion.getHeadcount() > 0) {
                     final int chance = chanceToRise(side, battalion.getType().getNation());
 
-                    if (getParent().getRandomGen().nextInt(100) <= chance) {
+                    if (getParent().getRandomGen().nextInt(101) <= chance) {
                         statRound[side][0]++;
 
                         // There is an upper bound on maximum experience that can be reached

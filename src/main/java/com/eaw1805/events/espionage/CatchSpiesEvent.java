@@ -65,7 +65,7 @@ public class CatchSpiesEvent
 
                     if (relation.getRelation() == REL_WAR) {
                         // The chance of your spy being revealed and captured is 5% per turn.
-                        final int roll = getRandomGen().nextInt(100) + 1;
+                        final int roll = getRandomGen().nextInt(101) + 1;
                         if (roll <= 5) {
                             // Report capture of spy.
                             report(thisSpy.getNation(), "spy.death", "Spy '" + thisSpy.getName() + "' was arrested by enemy forces at " + thisSector.getPosition().toString());

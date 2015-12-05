@@ -40,7 +40,7 @@ public class ArtilleryLongRangeCombat
         // // Fortress artillery shoots at the enemy at round 1 (small fortress).
         return getParent().getFortAttackFactor()
                 //* terrainFactorAr()
-                * (getParent().getRandomGen().nextInt(10) + 1) / 10d;
+                * (getParent().getRandomGen().nextInt(11) + 1) / 10d;
     }
 
     /**

@@ -1471,11 +1471,11 @@ public final class GameEngine
         // identify month
         final Calendar thisCal = calendar();
 
-        final int rollArctic = getRandomGen().nextInt(100) + 1;
+        final int rollArctic = getRandomGen().nextInt(101) + 1;
         boolean hasArctic;
-        final int rollCentral = getRandomGen().nextInt(100) + 1;
+        final int rollCentral = getRandomGen().nextInt(101) + 1;
         boolean hasCentral;
-        final int rollMediterranean = getRandomGen().nextInt(100) + 1;
+        final int rollMediterranean = getRandomGen().nextInt(101) + 1;
         boolean hasMediterranean;
 
         switch (thisCal.get(Calendar.MONTH)) {
@@ -1576,7 +1576,7 @@ public final class GameEngine
         // identify month
         final Calendar thisCal = calendar();
 
-        final int rollMediterranean = getRandomGen().nextInt(100) + 1;
+        final int rollMediterranean = getRandomGen().nextInt(101) + 1;
         boolean hasMediterranean;
 
         switch (thisCal.get(Calendar.MONTH)) {

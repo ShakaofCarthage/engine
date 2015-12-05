@@ -73,7 +73,7 @@ public class GuerillaEvent
                 }
 
                 // 3% chance for each French-occupied Spanish coordinate to Rebel
-                final int roll = getRandomGen().nextInt(100) + 1;
+                final int roll = getRandomGen().nextInt(101) + 1;
                 if (roll <= 3) {
                     // Sector has rebelled !
                     LOGGER.info("Sector " + sector.getPosition().toString() + " has rebelled against " + sector.getNation().getName() + " and return to the control of " + originalNation.getName());

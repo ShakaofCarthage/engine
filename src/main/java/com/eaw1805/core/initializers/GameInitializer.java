@@ -1014,7 +1014,7 @@ public class GameInitializer
 
         // Set initial rates based on region
         if (thisCity.getPosition().getRegion().getId() == EUROPE) {
-            qteGoods.put(GOOD_MONEY, 500000 + (caller.getRandomGen().nextInt(4) + 1) * 500000 + caller.getRandomGen().nextInt(100000));
+            qteGoods.put(GOOD_MONEY, 500000 + (caller.getRandomGen().nextInt(46 + 1) * 500000 + caller.getRandomGen().nextInt(100000));
 
             qteGoods.put(GOOD_INPT, getTradeRate());
             qteGoods.put(GOOD_FOOD, getTradeRate());
@@ -1031,7 +1031,7 @@ public class GameInitializer
 
         } else {
             // The colonies
-            qteGoods.put(GOOD_MONEY, 500000 + (caller.getRandomGen().nextInt(3) + 1) * 500000 + caller.getRandomGen().nextInt(100000));
+            qteGoods.put(GOOD_MONEY, 500000 + (caller.getRandomGen().nextInt(4) + 1) * 500000 + caller.getRandomGen().nextInt(100000));
 
             qteGoods.put(GOOD_INPT, getTradeRate());
             qteGoods.put(GOOD_FOOD, getTradeRate());
@@ -1054,7 +1054,7 @@ public class GameInitializer
 
     private int getTradeRate() {
         int surplus;
-        int rate = caller.getRandomGen().nextInt(12) + 1;
+        int rate = caller.getRandomGen().nextInt(13) + 1;
         if (rate == 1) {
             surplus = 1;
         } else if (rate <= 4) {

@@ -239,7 +239,7 @@ public class FleetMovement
             // Check if passing through storms
             if (sector.getStorm() > 0) {
                 // The ship will suffer an additional 0-4% attrition
-                int rndNum = getParent().getRandomGen().nextInt(4);
+                int rndNum = getParent().getRandomGen().nextInt(5);
 
                 // Dhows and Corsairs suffer double attrition when crossing storms
                 if (thisShip.getType().getIntId() == 6
@@ -289,7 +289,7 @@ public class FleetMovement
                 continue;
             }
 
-            final int rndNum = getParent().getRandomGen().nextInt(100) + 1;
+            final int rndNum = getParent().getRandomGen().nextInt(101) + 1;
             if (rndNum <= 1) {
                 // Ship was lost in the storm !!
                 newsSingle(entity.getNation(), NEWS_MILITARY, thisShip.getType().getTypeId(), "The ship " + thisShip.getName() + " was lost in a storm at " + sector.getPosition());

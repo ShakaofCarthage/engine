@@ -143,7 +143,7 @@ public class RebellionEvent
             LOGGER.info("Rolling rebellion for " + sector.getPosition().toString() + " with target " + baseRoll);
 
             // Check roll
-            final int roll = getRandomGen().nextInt(100) + 1;
+            final int roll = getRandomGen().nextInt(101) + 1;
             if (roll < baseRoll) {
                 // Sector has rebelled !
                 LOGGER.info("Sector " + sector.getPosition().toString() + " has rebelled against " + sector.getNation().getName() + " and return to the control of " + originalNation.getName());

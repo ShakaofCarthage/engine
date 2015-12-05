@@ -515,7 +515,7 @@ public class PositionChecker
      */
     public static void main(final String[] args) {
         // Introduce random delay
-        final int delay = new Random().nextInt(1);
+        final int delay = new Random().nextInt(2);
 
         LOGGER.info("Random delay of " + delay + " minutes");
 

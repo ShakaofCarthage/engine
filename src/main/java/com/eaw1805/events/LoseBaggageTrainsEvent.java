@@ -55,7 +55,7 @@ public class LoseBaggageTrainsEvent
             // examine condition of baggage train
             if (baggageTrain.getCondition() < 50) {
                 // a baggage train with condition of 15% has a 35% chance of being lost.
-                final int randNum = getRandomGen().nextInt(100) + 1;
+                final int randNum = getRandomGen().nextInt(101) + 1;
                 if (randNum < 50 - baggageTrain.getCondition()) {
                     report(baggageTrain.getNation(), "baggagetrain.loss", "Baggage Train [" + baggageTrain.getName() + "] was lost due to low condition");
 

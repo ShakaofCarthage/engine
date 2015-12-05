@@ -67,21 +67,21 @@ public class EpidemicsEvent
 
         // Check max number of epidemics for Europe
         if (month >= Calendar.MARCH && month <= Calendar.NOVEMBER) {
-            maxEpidemics[EUROPE] = getParent().getGameEngine().getRandomGen().nextInt(4) + 6;
+            maxEpidemics[EUROPE] = getParent().getGameEngine().getRandomGen().nextInt(5) + 6;
 
         } else {
-            maxEpidemics[EUROPE] = getParent().getGameEngine().getRandomGen().nextInt(4) + 9;
+            maxEpidemics[EUROPE] = getParent().getGameEngine().getRandomGen().nextInt(5) + 9;
         }
 
         // Check max number of epidemics for Colonies
         if (month >= Calendar.JUNE && month <= Calendar.AUGUST) {
             for (int region = CARIBBEAN; region <= AFRICA; region++) {
-                maxEpidemics[region] = getParent().getGameEngine().getRandomGen().nextInt(2) + 2;
+                maxEpidemics[region] = getParent().getGameEngine().getRandomGen().nextInt(3) + 2;
             }
 
         } else {
             for (int region = CARIBBEAN; region <= AFRICA; region++) {
-                maxEpidemics[region] = getParent().getGameEngine().getRandomGen().nextInt(2) + 3;
+                maxEpidemics[region] = getParent().getGameEngine().getRandomGen().nextInt(3) + 3;
             }
         }
 
@@ -109,7 +109,7 @@ public class EpidemicsEvent
                 }
 
                 // Check random
-                if (getParent().getGameEngine().getRandomGen().nextInt(100) < target) {
+                if (getParent().getGameEngine().getRandomGen().nextInt(101) < target) {
                     // Increase counter
                     totEpidemics[thisSector.getPosition().getRegion().getId()]++;
 
@@ -191,12 +191,12 @@ public class EpidemicsEvent
         // percentage of loss
         final double rate, rateBarracks;
         if (thisSector.getPosition().getRegion().getId() == EUROPE) {
-            rate = getParent().getGameEngine().getRandomGen().nextInt(3) + 2d;
-            rateBarracks = getParent().getGameEngine().getRandomGen().nextInt(3) + 1d;
+            rate = getParent().getGameEngine().getRandomGen().nextInt(4) + 2d;
+            rateBarracks = getParent().getGameEngine().getRandomGen().nextInt(4) + 1d;
 
         } else {
-            rate = getParent().getGameEngine().getRandomGen().nextInt(3) + 3d;
-            rateBarracks = getParent().getGameEngine().getRandomGen().nextInt(3) + 2d;
+            rate = getParent().getGameEngine().getRandomGen().nextInt(4) + 3d;
+            rateBarracks = getParent().getGameEngine().getRandomGen().nextInt(4) + 2d;
         }
 
         // keep track of total losses

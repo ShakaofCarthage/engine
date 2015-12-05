@@ -451,7 +451,7 @@ public class SectorMaintenance
                 // Try to reduce sector
                 if (thisSector.getPopulation() > 0) {
                     // There is a 50% chance that the sector will be reduced by 1 level
-                    final int randomDeduction = getRandomGen().nextInt(100);
+                    final int randomDeduction = getRandomGen().nextInt(101);
                     if (randomDeduction >= 50) {
                         reducedPop[nationId][regionId]++;
                         thisSector.setPopulation(thisSector.getPopulation() - 1);

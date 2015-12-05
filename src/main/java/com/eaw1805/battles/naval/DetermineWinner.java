@@ -118,7 +118,7 @@ public class DetermineWinner
         for (final Ship ship : lstShip) {
             if ((ship.getCondition() > 0)
                     && (ship.getMarines() > 0)) {
-                final int roll = getParent().getRandomGen().nextInt(100) + 1;
+                final int roll = getParent().getRandomGen().nextInt(101) + 1;
                 int thisTarget = targetRoll;
 
                 // Maritime Bonus

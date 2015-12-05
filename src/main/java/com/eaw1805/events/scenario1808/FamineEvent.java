@@ -49,7 +49,7 @@ public class FamineEvent
         final int month = thisCal.get(Calendar.MONTH);
         final int maxEpidemics;
 
-        int roll = getParent().getGameEngine().getRandomGen().nextInt(100) + 1;
+        int roll = getParent().getGameEngine().getRandomGen().nextInt(101) + 1;
 
         // Initialize summary
         final Map<Nation, Set<Sector>> summary = new HashMap<Nation, Set<Sector>>();

@@ -58,7 +58,7 @@ public class RumourEventProcessor
         for (final Nation nation : lstNation) {
             // We have make 2 rolls during newsletter creation, ranging from 3 to 10
             for (int roll = 0; roll < 2; roll++) {
-                final int totEntries = getGameEngine().getRandomGen().nextInt(8) + 3;
+                final int totEntries = getGameEngine().getRandomGen().nextInt(9) + 3;
                 LOGGER.info("RumourEventProcessor generating " + totEntries + " " + (roll == 0) + " rumours for " + nation.getName());
 
                 // Construct rumour event
@@ -96,7 +96,7 @@ public class RumourEventProcessor
     }
 
     private AbstractRumourEventProcessor chooseRumour(final Nation target, final boolean isTrue) {
-        final int roll = getGameEngine().getRandomGen().nextInt(10) + 1;
+        final int roll = getGameEngine().getRandomGen().nextInt(11) + 1;
         switch (roll) {
             case 1:
             case 2:

@@ -675,7 +675,7 @@ public class TacticalBattleProcessor
             // Sector has rebelled !
             LOGGER.info("Spanish side lost in scenario 1808 - Spanish Nationalism special event activated");
 
-            final int roll = getRandomGen().nextInt(25) + 6;
+            final int roll = getRandomGen().nextInt(26) + 6;
             int spanishTroopsFinal = 0;
 
             // count final number of spanish troops
@@ -928,7 +928,7 @@ public class TacticalBattleProcessor
         }
 
         // Random roll
-        final int roll = getRandomGen().nextInt(100) + 1;
+        final int roll = getRandomGen().nextInt(101) + 1;
         if (roll < targetRollTwo) {
             LOGGER.debug("The " + field.getProductionSite().getName() + " at " + field.getPosition().toString() + " was degraded by 2 levels!");
 

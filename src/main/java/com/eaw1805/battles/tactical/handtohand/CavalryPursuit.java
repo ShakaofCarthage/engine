@@ -170,7 +170,7 @@ public class CavalryPursuit
                 final int otherSide = (side + 1) % 2;
                 if (lostSoldiers[otherSide] > 0)
                     for (final Nation targetOwner : getParent().getSideNation(otherSide)) {
-                        final int powRate = getParent().getRandomGen().nextInt(25) + 75;
+                        final int powRate = getParent().getRandomGen().nextInt(26) + 75;
                         final int totalPOW = losses.get(targetOwner) * powRate / 100;
                         final int powShare = totalPOW / thisSideSize;
 

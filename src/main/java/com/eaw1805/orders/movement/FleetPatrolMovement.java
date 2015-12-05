@@ -64,7 +64,7 @@ public class FleetPatrolMovement
             for (final Ship thisShip : lstShips) {
 
                 // The ship will suffer an additional 0-4% attrition
-                int rndNum = getParent().getRandomGen().nextInt(4);
+                int rndNum = getParent().getRandomGen().nextInt(5);
 
                 // Dhows and Corsairs suffer double attrition when crossing storms
                 if (thisShip.getType().getIntId() == 6

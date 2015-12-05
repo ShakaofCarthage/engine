@@ -77,12 +77,12 @@ public class StormEvent
      * @param thisStorm the storm to expand.
      */
     private void expandStorm(final Sector thisStorm) {
-        int totSize = getParent().getGameEngine().getRandomGen().nextInt(14) + 8;
+        int totSize = getParent().getGameEngine().getRandomGen().nextInt(15) + 8;
         final int stormX = thisStorm.getPosition().getX();
         final int stormY = thisStorm.getPosition().getY();
         for (int thisX = stormX - 5; thisX <= stormX + 5; thisX++) {
             for (int thisY = stormY - 4; thisY <= stormY + 4; thisY++) {
-                final int roll = getParent().getGameEngine().getRandomGen().nextInt(100) + 1;
+                final int roll = getParent().getGameEngine().getRandomGen().nextInt(101) + 1;
                 final int distance = (int) Math.sqrt((stormX - thisX) ^ 2 + (stormY - thisY) ^ 2);
                 final int chance;
                 switch (distance) {
@@ -133,12 +133,12 @@ public class StormEvent
      * @param thisStorm the storm to move.
      */
     private void moveStorm(final Sector thisStorm) {
-        int totMoves = getParent().getGameEngine().getRandomGen().nextInt(4) + 1;
+        int totMoves = getParent().getGameEngine().getRandomGen().nextInt(5) + 1;
         int attempts = 0;
         Sector theSector = thisStorm;
         while (totMoves > 0 && attempts < 10) {
             // Choose random direction
-            final int direction = getParent().getGameEngine().getRandomGen().nextInt(8) + 1;
+            final int direction = getParent().getGameEngine().getRandomGen().nextInt(9) + 1;
 
             // Calculate next sector
             final Position newPos = calculateNextPosition(theSector.getPosition(), direction);
@@ -232,7 +232,7 @@ public class StormEvent
             switch (gameMonth) {
                 case Calendar.OCTOBER: {
                     // Generate 0..2 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(2);
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(3);
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -243,7 +243,7 @@ public class StormEvent
                     removeRandomStorm(lstStorms, 20d);
 
                     // Generate 1..4 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(4) + 1;
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(5) + 1;
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -256,7 +256,7 @@ public class StormEvent
                     removeRandomStorm(lstStorms, 25d);
 
                     // Generate 2..6 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(4) + 2;
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(5) + 2;
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -267,7 +267,7 @@ public class StormEvent
                     removeRandomStorm(lstStorms, 30d);
 
                     // Generate 1..3 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(2) + 1;
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(3) + 1;
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -278,7 +278,7 @@ public class StormEvent
                     removeRandomStorm(lstStorms, 20d);
 
                     // Generate 0..2 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(2);
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(3);
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -315,7 +315,7 @@ public class StormEvent
             switch (gameMonth) {
                 case Calendar.NOVEMBER: {
                     // Generate 0..4 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(4);
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(5);
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -339,7 +339,7 @@ public class StormEvent
                     removeRandomStorm(lstStorms, 40d);
 
                     // Generate 0..2 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(2);
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(3);
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -392,7 +392,7 @@ public class StormEvent
                     removeRandomStorm(lstStorms, 40d);
 
                     // Generate 0..2 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(2);
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(3);
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -430,7 +430,7 @@ public class StormEvent
             switch (gameMonth) {
                 case Calendar.NOVEMBER: {
                     // Generate 6..12 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(6) + 6;
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(7) + 6;
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -440,11 +440,11 @@ public class StormEvent
                 case Calendar.JANUARY:
                 case Calendar.FEBRUARY: {
                     // Remove 0..1 storms
-                    final int removeStorms = getParent().getGameEngine().getRandomGen().nextInt(1);
+                    final int removeStorms = getParent().getGameEngine().getRandomGen().nextInt(2);
                     removeRandomStorm(lstStorms, removeStorms);
 
                     // Generate 0..1 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(1);
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(2);
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -483,7 +483,7 @@ public class StormEvent
             switch (gameMonth) {
                 case Calendar.APRIL: {
                     // Generate 4..10 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(6) + 4;
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(7) + 4;
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -493,11 +493,11 @@ public class StormEvent
                 case Calendar.JUNE:
                 case Calendar.JULY: {
                     // Remove 0..1 storms
-                    final int removeStorms = getParent().getGameEngine().getRandomGen().nextInt(1);
+                    final int removeStorms = getParent().getGameEngine().getRandomGen().nextInt(2);
                     removeRandomStorm(lstStorms, removeStorms);
 
                     // Generate 0..1 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(1);
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(2);
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -535,7 +535,7 @@ public class StormEvent
             switch (gameMonth) {
                 case Calendar.MAY: {
                     // Generate 4..10 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(6) + 4;
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(7) + 4;
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -545,11 +545,11 @@ public class StormEvent
                 case Calendar.JULY:
                 case Calendar.AUGUST: {
                     // Remove 0..1 storms
-                    final int removeStorms = getParent().getGameEngine().getRandomGen().nextInt(1);
+                    final int removeStorms = getParent().getGameEngine().getRandomGen().nextInt(2);
                     removeRandomStorm(lstStorms, removeStorms);
 
                     // Generate 0..1 storms
-                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(1);
+                    final int newStorms = getParent().getGameEngine().getRandomGen().nextInt(2);
                     generateNewStorms(lstSea, newStorms);
 
                     break;
@@ -589,7 +589,7 @@ public class StormEvent
      */
     private void removeRandomStorm(final List<Sector> lstStorms, final double chance) {
         for (final Sector thisSector : lstStorms) {
-            final int roll = getParent().getGameEngine().getRandomGen().nextInt(100) + 1;
+            final int roll = getParent().getGameEngine().getRandomGen().nextInt(101) + 1;
             if (roll <= chance) {
                 thisSector.setStorm(0);
                 LOGGER.info("Storm centered at " + thisSector.getPosition() + " removed");

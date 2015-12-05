@@ -176,7 +176,7 @@ public class TradeProcessor
                 int npcValue = 0;
                 if (npcAction != TRADE_NO) {
                     // Determine amount of NPC transactions
-                    final int roll = getRandomGen().nextInt(10) + 1;
+                    final int roll = getRandomGen().nextInt(11) + 1;
                     npcValue = (int) ((previousCityWealth * roll) / 100d);
 
                     cityWealth += npcValue / 3;
@@ -341,7 +341,7 @@ public class TradeProcessor
 
         // Roll the chances
         final int decision;
-        final int roll = getRandomGen().nextInt(100) + 1;
+        final int roll = getRandomGen().nextInt(101) + 1;
         if (roll <= chanceInc) {
             decision = TRADE_RATE_INC;
 
@@ -362,7 +362,7 @@ public class TradeProcessor
      * @return the NPC action.
      */
     private int getNPCChance(final int demandRate) {
-        final int roll = getRandomGen().nextInt(100) + 1;
+        final int roll = getRandomGen().nextInt(101) + 1;
         int action;
         switch (demandRate) {
             case TRADE_ES:

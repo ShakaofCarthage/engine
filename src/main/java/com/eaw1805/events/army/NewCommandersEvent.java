@@ -140,7 +140,7 @@ public class NewCommandersEvent
                 thisCommander.setCorp(0);
                 thisCommander.setArmy(0);
                 thisCommander.setMps(80);
-                thisCommander.setComc(getRandomGen().nextInt(3) + 1);
+                thisCommander.setComc(getRandomGen().nextInt(4) + 1);
                 thisCommander.setStrc(1);
                 thisCommander.setPool(true);
                 thisCommander.setCarrierInfo(emptyCarrierInfo);

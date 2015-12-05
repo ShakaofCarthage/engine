@@ -109,7 +109,7 @@ public class HandOverTerritoryOrderProcessor
                                 if (thisSector.getNation().getTaxRate() > target.getTaxRate()) {
                                     // If a co-ordinate is transferred from a country with higher tax rate to
                                     // a country with lower tax rate, the population will drop between 1-3 levels (randomly)
-                                    final int drop = getParent().getRandomGen().nextInt(3) + 1;
+                                    final int drop = getParent().getRandomGen().nextInt(4) + 1;
                                     thisSector.setPopulation(thisSector.getPopulation() - drop);
                                     LOGGER.warn("Dropping population density by " + drop);
 
@@ -124,7 +124,7 @@ public class HandOverTerritoryOrderProcessor
                                 // When ceding co-ordinates in the colonies,
                                 // there is a 50% chance that the population density will drop by one level and
                                 // a 25% chance that the population density will drop by two levels.
-                                final int roll = getParent().getRandomGen().nextInt(100) + 1;
+                                final int roll = getParent().getRandomGen().nextInt(101) + 1;
                                 if (roll < 25) {
                                     thisSector.setPopulation(thisSector.getPopulation() - 2);
                                     LOGGER.warn("Dropping population density by 2");
@@ -177,7 +177,7 @@ public class HandOverTerritoryOrderProcessor
     }
 
     private int getLevelDrop(final int taxRateDiff) {
-        final int roll = getParent().getRandomGen().nextInt(100) + 1;
+        final int roll = getParent().getRandomGen().nextInt(101) + 1;
         final int levelDrop;
         switch (taxRateDiff) {
             case 0:

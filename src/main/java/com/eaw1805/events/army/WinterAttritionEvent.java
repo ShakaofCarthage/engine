@@ -71,7 +71,7 @@ public class WinterAttritionEvent
         for (final Sector sector : sectors.keySet()) {
             // Check if this sector does not have a barrack
             if (!sector.hasBarrack()) {
-                final double attrition = getParent().getGameEngine().getRandomGen().nextInt(2) + 1;
+                final double attrition = getParent().getGameEngine().getRandomGen().nextInt(3) + 1;
                 LOGGER.info("Battalions located at " + sector.getPosition() + " suffer extra loses [" + attrition + "%] from exposure to extreme cold");
 
                 // Check if this sector is affected by one of the winter effects
