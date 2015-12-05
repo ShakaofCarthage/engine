@@ -84,6 +84,30 @@ public final class PaymentManager {
         // We need this to update the player profiles
         final EventProcessor dummyProcessor = new EventProcessor(gameEngine);
 
+        HibernateUtil.connectEntityManagers(gameEngine.getGame().getScenarioId());
+
+        // Retrieve user games
+        final Transaction theTransTemp = HibernateUtil.getInstance().beginTransaction(gameEngine.getGame().getScenarioId());
+        final List<UserGame> lstUserGamesTemp = UserGameManager.getInstance().list(gameEngine.getGame());
+        theTransTemp.rollback();
+
+        for (final UserGame userGame : lstUserGamesTemp) {
+            if (gameEngine.isAlive(userGame.getNation())) {
+                final Transaction mainTrans = HibernateUtil.getInstance().beginTransaction(HibernateUtil.DB_MAIN);
+                final User user = UserManager.getInstance().getByID(userGame.getUserId());
+                mainTrans.rollback();
+
+                try {
+                    positions.put(user, retrieveAllUserGames(user));
+
+                } catch (Exception ex) {
+                    // Searching multiple dbs some times fails...
+                    positions.put(user, new ArrayList<UserGame>());
+                }
+            }
+        }
+
+        HibernateUtil.connectEntityManagers(gameEngine.getGame().getScenarioId());
         final Transaction theTrans = HibernateUtil.getInstance().beginTransaction(gameEngine.getGame().getScenarioId());
         final List<UserGame> lstUserGames = UserGameManager.getInstance().list(gameEngine.getGame());
         for (final UserGame userGame : lstUserGames) {
@@ -159,12 +183,10 @@ public final class PaymentManager {
                     if (userGame.getCost() > 0) {
                         // NEW PRICING POLICY
                         // http://forum.eaw1805.com/viewtopic.php?f=2&t=824
-                        final int originalCost = userGame.getCost();
                         final int cost = computeGameCost(user, userGame);
-                        userGame.setCost(cost);
 
                         // Make charges
-                        chargeUser(userGame, paymentDescr.toString());
+                        chargeUser(userGame, cost, paymentDescr.toString());
 
                         // Check if this position received free credits
                         if (userGame.getOffer() > 0) {
@@ -176,9 +198,6 @@ public final class PaymentManager {
                                 userGame.setOffer(0);
                             }
                         }
-
-                        // Restore position cost
-                        userGame.setCost(originalCost);
                     }
 
                     // Reset newsletter flags
