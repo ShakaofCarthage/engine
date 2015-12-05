@@ -151,6 +151,36 @@ public class HandOverTerritoryOrderProcessor
 
                     // check if sector has a barracks
                     if (thisSector.getProductionSite() != null && thisSector.getProductionSite().getId() >= PS_BARRACKS) {
+                        // check if this is the first barrack in the colonies
+                        final int regionId = thisSector.getPosition().getRegion().getId();
+                        if (regionId != EUROPE) {
+                            boolean foundMore = false;
+                            final List<Barrack> lstBarracks = BarrackManager.getInstance().listByGameNation(getGame(), target);
+                            for (final Barrack barrack : lstBarracks) {
+                                if (barrack.getPosition().getRegion().getId() == regionId) {
+                                    foundMore = true;
+                                }
+                            }
+
+                            if (!foundMore) {
+                                // Start up a colony
+                                final List<Report> lstReports = ReportManager.getInstance().listByOwnerKey(thisSector.getTempNation(), getGame(), "colony." + regionId);
+                                if (lstReports.isEmpty()) {
+                                    // We gain 8 VP
+                                    changeVP(getGame(), thisSector.getTempNation(), STARTUP_COLONY,
+                                            "Start up a Colony in " + thisSector.getPosition().getRegion().getName());
+
+                                    report(thisSector.getTempNation(), "colony." + regionId, "1");
+
+                                    // Modify player's profile
+                                    changeProfile(target, ProfileConstants.STARTUP_COLONY, 1);
+
+                                    // Update achievements
+                                    getParent().achievementsSetupColonies(getGame(), target);
+                                }
+                            }
+                        }
+
                         // also hand-over barrack
                         final Barrack barrack = BarrackManager.getInstance().getByPosition(thisSector.getPosition());
                         barrack.setNation(target);
