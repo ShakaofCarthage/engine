@@ -628,6 +628,67 @@ public class TacticalBattleProcessor
     }
 
     /**
+     * Spanish Nationalism special event.
+     *
+     * Every time Spanish forces lose a battle, a random number of citizens
+     * (between 5% to 30% of Spanish casualties in the battle lost) will reappear in their warehouse.
+     *
+     * @param spanishTroopsInit -- initial headcount of spanish troop.
+     * @param loser -- the side that lost the battle.
+     */
+    private void spanishNationalism(final int[] spanishTroopsInit, final int loser) {
+        // Check if spaniards are among the losers
+        boolean spanishInvolved = false;
+        for (final Nation nation : sideNations[loser]) {
+            if (nation.getId() == NationConstants.NATION_SPAIN) {
+                spanishInvolved = true;
+                break;
+            }
+        }
+
+        // Every time Spanish forces lose a battle,
+        // a random number of citizens
+        // (between 5% to 30% of Spanish casualties in the battle lost)
+        // will reappear in their warehouse.
+        if (spanishInvolved) {
+            // Sector has rebelled !
+            LOGGER.info("Spanish side lost in scenario 1808 - Spanish Nationalism special event activated");
+
+            final int roll = getRandomGen().nextInt(25) + 6;
+            int spanishTroopsFinal = 0;
+
+            // count final number of spanish troops
+            for (final Battalion battalion : getSideBattalions()[loser]) {
+
+                // Count final number of spanish troops
+                if (NationConstants.NATION_SPAIN == battalion.getType().getNation().getId()) {
+                    spanishTroopsFinal += battalion.getHeadcount();
+                }
+            }
+
+            final int casualties = spanishTroopsInit[loser] - spanishTroopsFinal;
+            final int nationalism = (int) ((casualties * roll) / 100d);
+
+            news(field.getPosition().getGame(), getSideNation(loser),
+                    NationManager.getInstance().getByID(NationConstants.NATION_SPAIN), NEWS_MILITARY,
+                    nationalism + " spanish deserters from the last battle regained their confidence in Spain and report back in your warehouse for service!");
+
+            // Retrieve warehouse
+            final Warehouse spanishWarehouse = WarehouseManager.getInstance().getByNationRegion(thisGame,
+                    NationManager.getInstance().getByID(NationConstants.NATION_SPAIN),
+                    RegionManager.getInstance().getByID(RegionConstants.EUROPE));
+
+            final Map<Integer, Integer> storedGoods =  spanishWarehouse.getStoredGoodsQnt();
+            final int people = storedGoods.get(GoodConstants.GOOD_PEOPLE);
+            storedGoods.put(GoodConstants.GOOD_PEOPLE, people + nationalism);
+            spanishWarehouse.setStoredGoodsQnt(storedGoods);
+            WarehouseManager.getInstance().update(spanishWarehouse);
+
+            LOGGER.info(nationalism + " citizens added to SPAIN/EUROPE warehouse");
+        }
+    }
+
+    /**
      * Determine which side won the battle.
      *
      * @param roundStats the statistics of each round.

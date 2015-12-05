@@ -224,6 +224,15 @@ public class SectorMaintenance
                 increase *= 1.25d;
             }
 
+            // Scenario 1808,
+            // After June 1812,
+            // France -50% citizen recruits for the remaining scenario
+            if (HibernateUtil.DB_S3 == getGame().getScenarioId()
+                    && getGame().getTurn() >= 46
+                    && nationId == NATION_FRANCE) {
+                increase *= .5d;
+            }
+
             // Increase people at warehouse
             incTotGoods(nationId, regionId, GOOD_PEOPLE, increase);
 

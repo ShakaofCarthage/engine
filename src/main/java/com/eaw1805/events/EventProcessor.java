@@ -101,6 +101,19 @@ public class EventProcessor
             eventLst.add(new RebellionEvent(this));
         }
 
+        // Scenario 1808 events
+        if (getGame().getScenarioId() == HibernateUtil.DB_S3) {
+
+            // Guerilla
+            eventLst.add(new GuerillaEvent(this));
+
+            // Famine
+            eventLst.add(new FamineEvent(this));
+
+            // Additional Game Events
+            eventLst.add(new HistoricEvent(this));
+        }
+
         // Espionage related events
         eventLst.add(new CatchSpiesEvent(this));
         eventLst.add(new GenerateSpiesEvent(this));
