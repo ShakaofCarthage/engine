@@ -71,10 +71,11 @@ public class EventProcessor
         eventLst.add(new DestroyShipsEvent(this));
         eventLst.add(new RemoveEmptyFleetsEvent(this));
 
-        if (getGame().getScenarioId() > HibernateUtil.DB_MAIN) {
+        if (getGame().getScenarioId() == HibernateUtil.DB_S1
+                || getGame().getScenarioId() == HibernateUtil.DB_S2) {
             eventLst.add(new JumpOffPointsEvent1805(this));
 
-        } else {
+        } else if (getGame().getScenarioId() == HibernateUtil.DB_FREE) {
             eventLst.add(new JumpOffPointsEvent1804(this));
         }
 
