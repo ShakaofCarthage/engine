@@ -126,7 +126,7 @@ public class SOLLongRangeFire
                         }
 
                         // calculate modifier based on target ship's class
-                        final int fireModShipClass = calcTargetFireModifier(ship.getType().getShipClass());
+                        final int fireModShipClass = calcTargetFireModifier(targetShip.getType().getShipClass());
 
                         // calculate fire efficiency
                         final double fireEfficiency = (fireModWeather / 100d)
