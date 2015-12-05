@@ -547,11 +547,23 @@ public class OrderProcessor
                     if (theirRelation.getRelation() != REL_WAR
                             && theirRelation.getPeaceCount() == 0
                             && theirRelation.getSurrenderCount() == 0) {
-                        // Refusing a call to allies
-                        newsGlobal(target, caller, NEWS_POLITICAL,
-                                "We refused the call of our ally " + caller.getName() + " to join war against " + enemy.getName() + ". As a result, our alliance with " + caller.getName() + " is broken !",
-                                target.getName() + " refused our call to join the war against " + enemy.getName() + ". As a result, our alliance with " + target.getName() + " is broken !",
-                                target.getName() + " refused the call of " + caller.getName() + " to join the war against " + enemy.getName() + ". As a result, the alliance of " + target.getName() + " with " + caller.getName() + " is broken !");
+
+                        // Fixed alliances cannot break
+                        if (allianceRelation.getFixed()) {
+
+                            // Refusing a call to allies
+                            newsGlobal(target, caller, NEWS_POLITICAL,
+                                    "We refused the call of our ally " + caller.getName() + " to join war against " + enemy.getName() + ". Our alliance with " + caller.getName() + " is not affected !",
+                                    target.getName() + " refused our call to join the war against " + enemy.getName() + ". Our alliance with " + target.getName() + " is not affected !",
+                                    target.getName() + " refused the call of " + caller.getName() + " to join the war against " + enemy.getName() + ". The alliance of " + target.getName() + " with " + caller.getName() + " is still in full effect !");
+
+                        } else {
+                            // Refusing a call to allies
+                            newsGlobal(target, caller, NEWS_POLITICAL,
+                                    "We refused the call of our ally " + caller.getName() + " to join war against " + enemy.getName() + ". As a result, our alliance with " + caller.getName() + " is broken !",
+                                    target.getName() + " refused our call to join the war against " + enemy.getName() + ". As a result, our alliance with " + target.getName() + " is broken !",
+                                    target.getName() + " refused the call of " + caller.getName() + " to join the war against " + enemy.getName() + ". As a result, the alliance of " + target.getName() + " with " + caller.getName() + " is broken !");
+                        }
 
                         // Target loses 6 VPs
                         changeVP(getGame(), target, POLITICS_WAR_CALL_REFUSE, "Refusing a call to Allies");
@@ -562,20 +574,23 @@ public class OrderProcessor
                         // Update achievements
                         achievementsRejectCall(getGame(), target);
 
-                        // Alliance is broken
-                        final NationsRelation thisRelation = RelationsManager.getInstance().getByNations(getGame(),
-                                target, caller);
-                        thisRelation.setRelation(REL_PASSAGE);
-                        RelationsManager.getInstance().update(thisRelation);
+                        // Fixed alliances cannot break
+                        if (!allianceRelation.getFixed()) {
+                            // Alliance is broken
+                            final NationsRelation thisRelation = RelationsManager.getInstance().getByNations(getGame(),
+                                    target, caller);
+                            thisRelation.setRelation(REL_PASSAGE);
+                            RelationsManager.getInstance().update(thisRelation);
 
-                        final NationsRelation thisRelationReverse = RelationsManager.getInstance().getByNations(getGame(),
-                                caller, target);
-                        thisRelationReverse.setRelation(REL_PASSAGE);
-                        RelationsManager.getInstance().update(thisRelationReverse);
+                            final NationsRelation thisRelationReverse = RelationsManager.getInstance().getByNations(getGame(),
+                                    caller, target);
+                            thisRelationReverse.setRelation(REL_PASSAGE);
+                            RelationsManager.getInstance().update(thisRelationReverse);
 
-                        // Unload loaded units
-                        unloadUnits(getGame(), target, caller);
-                        unloadUnits(getGame(), caller, target);
+                            // Unload loaded units
+                            unloadUnits(getGame(), target, caller);
+                            unloadUnits(getGame(), caller, target);
+                        }
                     }
                 }
             }
@@ -937,12 +952,18 @@ public class OrderProcessor
                 // locate barrack
                 final Barrack thisBarr = BarrackManager.getInstance().getByPosition(sector.getPosition());
 
-                // Capture of Ships under construction
-                // or move outside of the port
-                destroyOrMoveShips(sector);
+                try {
+                    // Capture of Ships under construction
+                    // or move outside of the port
+                    destroyOrMoveShips(sector);
 
-                // Capture trains or move outside of the barrack
-                destroyOrMoveTrains(sector);
+                    // Capture trains or move outside of the barrack
+                    destroyOrMoveTrains(sector);
+
+                } catch (Exception ex) {
+                    // something very weird appeared - normally it should never enter here
+                    LOGGER.error(ex, ex);
+                }
 
                 // If a country conquers a fortress, we need to check the level of the fortress at the start of the turn
                 // A possible battle may degrade the level

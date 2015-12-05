@@ -276,11 +276,15 @@ public class TacticalBattleProcessor
      */
     public List<RoundStatistics> process() {
         final Map<Integer, RoundStatistics> statMap = new HashMap<Integer, RoundStatistics>();
-        final List<RoundStatistics> rStats = new ArrayList<RoundStatistics>();
+        final List<RoundStatistics> rStats = new ArrayList<empire.battles.tactical.result.RoundStatistics>();
 
         LOGGER.info("Processing tactical battle in "
                 + field.getTerrain().getName()
                 + " (" + field.getTerrain().getCode() + ")");
+
+        // Scenario 1808
+        // Spanish Nationalism special event
+        int[] spanishTroopsInit = new int[2];
 
         // Clear morale issues & increase experience due to commander
         for (int side = 0; side < 2; side++) {
@@ -305,6 +309,11 @@ public class TacticalBattleProcessor
                 // check minimum headcount
                 if (battalion.getHeadcount() < 1) {
                     battalion.setHeadcount(0);
+                }
+
+                // Count initial number of spanish troops
+                if (NationConstants.NATION_SPAIN == battalion.getType().getNation().getId()) {
+                    spanishTroopsInit[side] += battalion.getHeadcount();
                 }
             }
 
@@ -331,7 +340,7 @@ public class TacticalBattleProcessor
 
         // Round 1: Artillery long-range combat (Heavy and Light artillery only)
         LOGGER.debug("Round 1: Artillery long-range combat (Artillery fire)");
-        final ArtilleryLongRangeCombat round1 = new ArtilleryLongRangeCombat(this);
+        final empire.battles.tactical.longrange.ArtilleryLongRangeCombat round1 = new ArtilleryLongRangeCombat(this);
         rstat = round1.process();
         if (rstat.getSideStat()[0][0] + rstat.getSideStat()[1][0] > 0) {
             rStats.add(rstat);
@@ -498,6 +507,12 @@ public class TacticalBattleProcessor
                     } else if (fortress == 3) {
                         changeVP(thisGame, sideNations[winner], DEFEND_LARGE, "Defended the large fortress at " + field.getPosition().toString());
                     }
+
+                    // Scenario 1808
+                    // Spanish Nationalism special event
+                    if (HibernateUtil.DB_S3 == thisGame.getScenarioId()) {
+                        spanishNationalism(spanishTroopsInit, loser);
+                    }
                 }
 
             } else if (finalStats[0][3] < finalStats[1][3] && finalStats[1][3] / finalStats[0][3] >= 1.6d) {
@@ -521,6 +536,12 @@ public class TacticalBattleProcessor
                     // raise lost battle indicator to all loser battalions
                     for (final Battalion battalion : sideBattalions[loser]) {
                         battalion.setHasLost(true);
+                    }
+
+                    // Scenario 1808
+                    // Spanish Nationalism special event
+                    if (HibernateUtil.DB_S3 == thisGame.getScenarioId()) {
+                        spanishNationalism(spanishTroopsInit, loser);
                     }
                 }
 
