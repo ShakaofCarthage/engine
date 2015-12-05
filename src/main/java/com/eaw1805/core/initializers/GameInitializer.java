@@ -517,6 +517,7 @@ public class GameInitializer
         newNR.setTarget(thisNR.getTarget());
         newNR.setRelation(thisNR.getRelation());
         newNR.setPrisoners(thisNR.getPrisoners());
+        newNR.setVisible(thisNR.isVisible());
         RelationsManager.getInstance().add(newNR);
     }
 
