@@ -3,34 +3,11 @@ package com.eaw1805.core;
 import com.eaw1805.data.HibernateUtil;
 import com.eaw1805.data.constants.GameConstants;
 import com.eaw1805.data.constants.ReportConstants;
-import com.eaw1805.data.managers.GameManager;
-import com.eaw1805.data.managers.NationManager;
-import com.eaw1805.data.managers.ReportManager;
-import com.eaw1805.data.managers.UserGameManager;
-import com.eaw1805.data.managers.UserManager;
-import com.eaw1805.data.model.Game;
-import com.eaw1805.data.model.Nation;
-import com.eaw1805.data.model.Report;
-import com.eaw1805.data.model.User;
-import com.eaw1805.data.model.UserGame;
+import com.eaw1805.data.managers.*;
+import com.eaw1805.data.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Transaction;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeSet;
 
 /**
  * Weekly notification of inactive positions.
@@ -505,23 +482,25 @@ public class PositionChecker
         thisTrans.commit();
 
         for (final User user : lstUsers) {
-            // check if user is inactive
-            int totActivePos = 0;
-            for (int db = HibernateUtil.DB_FIRST; db <= HibernateUtil.DB_LAST; db++) {
-                HibernateUtil.connectEntityManagers(db);
-                final Transaction nextTrans = HibernateUtil.getInstance().beginTransaction(db);
-                final List<UserGame> positions = UserGameManager.getInstance().listActive(user);
-                nextTrans.commit();
+            if (user.getEnableNotifications()) {
+                // check if user is inactive
+                int totActivePos = 0;
+                for (int db = HibernateUtil.DB_FIRST; db <= HibernateUtil.DB_LAST; db++) {
+                    HibernateUtil.connectEntityManagers(db);
+                    final Transaction nextTrans = HibernateUtil.getInstance().beginTransaction(db);
+                    final List<UserGame> positions = UserGameManager.getInstance().listActive(user);
+                    nextTrans.commit();
 
-                totActivePos += positions.size();
-            }
+                    totActivePos += positions.size();
+                }
 
-            if (totActivePos == 0) {
-                // Send to each user only once per 2 months
-                if ((user.getUserId() % maxWeeknumber == week) && (user.getUserId() % 2 == weekOfYear % 2)) {
-                    totNotifications++;
-                    LOGGER.info("Informing " + user.getUsername() + "<" + user.getEmail() + ">");
-                    EmailManager.getInstance().sendUpdate(user.getEmail(), subject, "Dear " + user.getUsername() + body);
+                if (totActivePos == 0) {
+                    // Send to each user only once per 2 months
+                    if ((user.getUserId() % maxWeeknumber == week) && (user.getUserId() % 2 == weekOfYear % 2)) {
+                        totNotifications++;
+                        LOGGER.info("Informing " + user.getUsername() + "<" + user.getEmail() + ">");
+                        EmailManager.getInstance().sendUpdate(user.getEmail(), subject, "Dear " + user.getUsername() + body);
+                    }
                 }
             }
         }
