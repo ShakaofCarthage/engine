@@ -1047,6 +1047,11 @@ public class WarfareProcessor
                         }
                     }
 
+                    // In a very rare case where no-one was found...
+                    if (newOwner == null) {
+                        newOwner = side1set.iterator().next();
+                    }
+
                     // Make sure that no other battle that involved the owner of the sector took place
                     LOGGER.debug("Sector " + field.getField().getPosition() + " owned by " + field.getField().getNation().getName() + " was conquered by " + newOwner.getName());
                     field.getField().setTempNation(newOwner);
