@@ -166,6 +166,7 @@ public class BuildShip
 
                                             getOrder().setResult(1);
                                             getOrder().setExplanation("new ship [" + shipName + "] of type " + shipTPE.getName() + " built at " + thisSector.getPosition().toString());
+
                                         } else {
                                             // delay build of ship
                                             newsSingle(getOrder().getNation(), NEWS_MILITARY,

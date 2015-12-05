@@ -61,7 +61,6 @@ public class RepairFleet
             thisFleet = FleetManager.getInstance().getByID(fleetId);
         }
 
-
         if (thisFleet != null) {
             boolean isAllied = false;
             if (thisFleet.getNation().getId() != getOrder().getNation().getId()) {

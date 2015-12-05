@@ -163,6 +163,7 @@ public class RepairShip
                 getOrder().setResult(-7);
                 getOrder().setExplanation("not owner of sector");
             }
+
         } else {
             getOrder().setResult(-8);
             getOrder().setExplanation("cannot locate ship");
