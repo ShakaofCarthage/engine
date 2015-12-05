@@ -52,16 +52,14 @@ public class RebellionEvent
         final Game initGame = GameManager.getInstance().getByID(-1);
 
         final Game thisGame = getParent().getGameEngine().getGame();
-        final List<Nation> lstNations = NationManager.getInstance().list();
         final List<Nation> activeNations = getParent().getGameEngine().getAliveNations();
 
         // Retrieve taxation orders
-        final int[] taxOrders = new int[lstNations.size() + 1];
+        final Map<Integer, Integer> taxOrders = new HashMap<Integer, Integer>();
         final List<PlayerOrder> lstTaxOrders = PlayerOrderManager.getInstance().listTaxOrders(thisGame, thisGame.getTurn());
         for (PlayerOrder taxOrder : lstTaxOrders) {
-            taxOrders[taxOrder.getNation().getId()] = Integer.parseInt(taxOrder.getParameter1());
+            taxOrders.put(taxOrder.getNation().getId(), Integer.parseInt(taxOrder.getParameter1()));
         }
-
 
         // Locate conquered sectors
         final List<Sector> lstConquered = SectorManager.getInstance().listConquered(thisGame);
@@ -99,24 +97,28 @@ public class RebellionEvent
                 continue;
             }
 
-            // Each coordinate has a 30% probability to rebel
-            int baseRoll = 2;// 30;
+            // Each coordinate has a 2% probability to rebel
+            int baseRoll = 2;
 
             // If the empire uses 'harsh' or “low” taxation the chance for rebellion is doubled or halved respectively.
             // check taxation orders
-            switch (taxOrders[sector.getNation().getId()]) {
-                case OrderConstants.TAX_HARSH:
-                    // chances to rebel increase by 20%
-                    baseRoll = 8;//40;
-                    break;
+            if (taxOrders.containsKey(sector.getNation().getId())) {
+                switch (taxOrders.get(sector.getNation().getId())) {
+                    case OrderConstants.TAX_HARSH:
+                        // chances to rebel increase by 20%
+                        baseRoll = 8;//40;
+                        break;
 
-                case OrderConstants.TAX_LOW:
-                    // chances to rebel decease by 40%
-                    baseRoll = 2;//20;
-                    break;
+                    case OrderConstants.TAX_LOW:
+                        // chances to rebel decease by 40%
+                        baseRoll = 2;//20;
+                        break;
 
-                default:
-                    // leave as is
+                    default:
+                        // leave as is
+                }
+            } else {
+                // no effect on base roll
             }
 
             // Certain areas in the map run a higher risk that average to rebel.
@@ -169,8 +171,6 @@ public class RebellionEvent
                 LOGGER.info("Sector " + sector.getPosition().toString() + " did NOT rebelled against " + sector.getNation().getName());
             }
         }
-
-
 
         LOGGER.info("RebellionEvent processed.");
     }
