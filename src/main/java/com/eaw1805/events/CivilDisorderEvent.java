@@ -132,7 +132,7 @@ public class CivilDisorderEvent
                                 }
 
                                 // check if a war was going on
-                                if (thisRelation.getRelation() == REL_WAR && thisRelation.getTurnCount() >= 8) {
+                                if (thisRelation.getRelation() == REL_WAR && thisRelation.getTurnCount() >= 7) {
                                     // Award VPs for winning this battle
                                     changeVP(thisGame, thisNation, ENEMY_ENTERS_CD, nation.getName() + " enters civil disorder");
 

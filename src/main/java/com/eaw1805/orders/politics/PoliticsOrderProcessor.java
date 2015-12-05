@@ -632,8 +632,8 @@ public class PoliticsOrderProcessor
         reverseRelation.setSurrenderCount(0);
         RelationsManager.getInstance().update(reverseRelation);
 
-        relation.setTurnCount(-1);
         relation.setRelation(REL_WAR);
+        relation.setTurnCount(-1);
         relation.setPeaceCount(0);
         relation.setSurrenderCount(0);
         RelationsManager.getInstance().update(relation);
