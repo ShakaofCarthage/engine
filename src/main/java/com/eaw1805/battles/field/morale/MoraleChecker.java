@@ -24,6 +24,8 @@ import java.util.Map.Entry;
  *
  * @author fragkakis
  */
+
+/* Adding implementation to deal with morale for multiple groups of battalions in a field battle */
 public class MoraleChecker {
 
 
